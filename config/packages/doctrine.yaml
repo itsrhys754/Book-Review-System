@@ -25,7 +25,7 @@ doctrine:
             ReviewBundle:
                 type: attribute
                 is_bundle: false
-                dir: 'vendor/rhysawd/review-bundle/src/Entity'  # No need for %kernel.project_dir% here
+                dir: 'vendor/rhysawd/review-bundle/src/Entity'  
                 prefix: 'Rhys\ReviewBundle\Entity'
                 alias: RhysReviewBundle
         controller_resolver:
