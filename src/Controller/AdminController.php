@@ -44,7 +44,7 @@ class AdminController extends AbstractController
     public function manageReviews(): Response
     {
         // Retrieve pending reviews that are not yet approved, excluding those owned by the current admin
-        $pendingReviews = $this->reviewRepository->findPendingReviews($this->getUser());
+        $pendingReviews = $this->reviewRepository->findByPendingStatus($this->getUser());
 
         return $this->render('admin/manage_reviews.html.twig', [
             'pendingReviews' => $pendingReviews,
