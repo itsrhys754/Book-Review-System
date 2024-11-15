@@ -45,7 +45,8 @@ class RegistrationController extends AbstractController
                         );
                         $user->setAvatarFilename($newFilename); 
                     } catch (FileException $e) {
-                        // Handle exception if something happens during file upload
+                        // Log the specific file upload error
+                        error_log('Avatar upload error: ' . $e->getMessage());
                         $this->addFlash('danger', 'An error occurred while uploading your avatar.');
                     }
                 }
@@ -55,13 +56,11 @@ class RegistrationController extends AbstractController
                     ->findOneBy(['username' => $user->getUsername()]);
                 
                 if ($existingUser) {
+                    $this->addFlash('danger', 'This username is already taken. Please choose another one.');
                     return $this->render('registration/register.html.twig', [
                         'form' => $form->createView(),
-                        $this->addFlash('danger', 'This username is already taken. Please choose another one.')
                     ]);
                 }
-
-                
 
                 // Hash the password
                 $hashedPassword = $passwordHasher->hashPassword(
@@ -78,9 +77,11 @@ class RegistrationController extends AbstractController
                 return $this->redirectToRoute('app_login');
 
             } catch (\Exception $e) {
+                // Log the actual error
+                error_log('Registration error: ' . $e->getMessage());
+                $this->addFlash('danger', 'An error occurred during registration. Please try again.');
                 return $this->render('registration/register.html.twig', [
                     'form' => $form->createView(),
-                    $this->addFlash('danger', 'An error occurred during registration. Please try again.')
                 ]);
             }
         }
