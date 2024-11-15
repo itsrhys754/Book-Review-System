@@ -315,6 +315,14 @@ footer p {
     border-color: #c3e6cb;
 }
 
+.alert-danger {
+    background-color: #dc3545; /* Red background for danger messages */
+    color: white; 
+    padding: 15px; 
+    border-radius: 4px; 
+    margin-bottom: 1rem; 
+}
+
 .alert-dismissible .btn-close {
     position: absolute;
     top: 0;
@@ -1079,7 +1087,35 @@ input:focus-visible {
         padding: 1rem;
     }
 
-        /* Adjust the grid for mobile view */
+    /* Adjust review-actions for mobile: Stack the buttons and badges */
+    .review-actions {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    /* Make the buttons and badges larger for easier tap */
+    .btn-danger {
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+
+    .pending-badge {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    /* Adjust book link font size */
+    .book-link {
+        font-size: 1rem;
+    }
+
+    /* Ensure reviews section has proper padding */
+    .reviews-section {
+        padding: 1rem;
+    }
+
+    /* Book Detail Page */
         .book-header {
             grid-template-columns: 1fr;
             gap: 1rem;
@@ -1119,31 +1155,4 @@ input:focus-visible {
             padding: 0 1rem;
             margin: 1rem auto;
         }
-}
-
-@media (max-width: 480px) {
-    /* Further reduce font sizes */
-    h1 { font-size: 1.75rem; }
-    h2 { font-size: 1.5rem; }
-    h3 { font-size: 1.25rem; }
-
-    /* Adjust container width */
-    .container {
-        padding: 0 0.5rem;
-    }
-
-    /* Stack buttons on mobile */
-    .btn {
-        padding: 1rem;
-        font-size: 1rem;
-    }
-}
-
-
-.alert-danger {
-    background-color: #dc3545; /* Red background for danger messages */
-    color: white; /* White text color */
-    padding: 15px; /* Add some padding */
-    border-radius: 4px; /* Rounded corners */
-    margin-bottom: 1rem; /* Space below the alert */
 }
