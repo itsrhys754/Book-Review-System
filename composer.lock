@@ -1488,12 +1488,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/itsrhys754/ReviewBundle.git",
-                "reference": "1f45f8bcc3e4eb9aa06032d5073f7192217381ab"
+                "reference": "3effc6d77e77c585c2b84091a176906187ee1e58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/itsrhys754/ReviewBundle/zipball/1f45f8bcc3e4eb9aa06032d5073f7192217381ab",
-                "reference": "1f45f8bcc3e4eb9aa06032d5073f7192217381ab",
+                "url": "https://api.github.com/repos/itsrhys754/ReviewBundle/zipball/3effc6d77e77c585c2b84091a176906187ee1e58",
+                "reference": "3effc6d77e77c585c2b84091a176906187ee1e58",
                 "shasum": ""
             },
             "require": {
@@ -1522,7 +1522,7 @@
                 "issues": "https://github.com/itsrhys754/ReviewBundle/issues",
                 "source": "https://github.com/itsrhys754/ReviewBundle/tree/main"
             },
-            "time": "2024-11-15T21:01:06+00:00"
+            "time": "2024-11-15T22:47:16+00:00"
         },
         {
             "name": "symfony/asset",
