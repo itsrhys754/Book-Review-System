@@ -47,6 +47,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('avatar', FileType::class, [
                 'mapped' => false,
+                'required' => false,
                 'label' => 'Avatar',
                 'constraints' => [
                     new Image([
