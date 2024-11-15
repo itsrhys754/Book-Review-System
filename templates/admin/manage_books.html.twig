@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage Books{% endblock %}
+
+{% block body %}
+    <div class="profile-wrapper">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 class="h4 mb-0"><i class="fas fa-star me-2"></i>Pending Books</h2>
+                <span class="badge bg-light text-primary">{{ pendingBooks|length }} Pending</span>
+            </div>
+            
+            <div class="card-body p-0">
+                {% if pendingBooks is empty %}
+                    <div class="no-results m-4">
+                        <i class="fas fa-info-circle"></i>
+                        <h2>No Pending Books</h2>
+                        <p>There are no books waiting for approval at this time.</p>
+                    </div>
+                {% else %}
+                    <div class="review-grid">
+                        {% for book in pendingBooks %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="book-image me-3">
+                                            {% if book.imageFilename %}
+                                                <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" 
+                                                     alt="{{ book.title }}"
+                                                     style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                            {% else %}
+                                                <img src="{{ asset('uploads/book_images/default-book-image.png') }}" 
+                                                     alt="Default cover"
+                                                     style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                            {% endif %}
+                                        </div>
+                                        <span class="fw-medium">{{ book.title }}</span>
+                                    </div>
+                                    
+                                    <p>{{ book.summary|slice(0, 100) }}{% if book.summary|length > 100 %}...{% endif %}</p>
+                                    <p class="submitted-by">
+                                        Submitted by: <a href="{{ path('app_public_profile', { username: book.user.username }) }}">{{ book.user.username }}</a>
+                                    </p>
+                                    <div class="text-end">
+                                        <div class="action-buttons">
+                                            <button class="btn btn-primary" 
+                                                    onclick="window.location.href='{{ path('admin_approve_book', { id: book.id }) }}'">
+                                                <i class="fas fa-check me-1"></i> Approve
+                                            </button>
+                                            <button class="btn btn-danger" 
+                                                    onclick="if(confirm('Are you sure you want to delete this book?')) window.location.href='{{ path('admin_delete_book', { id: book.id }) }}'">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

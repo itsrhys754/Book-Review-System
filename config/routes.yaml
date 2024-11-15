@@ -3,3 +3,6 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+review_bundle:
+    resource: '@ReviewBundle/Resources/config/routes.yaml'

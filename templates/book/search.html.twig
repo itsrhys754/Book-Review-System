@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search Results for "{{ query }}"{% endblock %}
+
+{% block body %}
+    <div class="search-page-container">
+        <div class="faceted-search">
+            <div class="filter-section">
+                <h3>Filters</h3>
+                <form action="{{ path('app_search') }}" method="get" class="filter-form">
+                    <input type="hidden" name="query" value="{{ query }}">
+                    
+                    <div class="filter-group">
+                        <h4>Genre</h4>
+                        {% for genre in genres %}
+                            <label class="filter-option">
+                                <input type="checkbox" name="genres[]" value="{{ genre }}"
+                                    {% if genre in selectedGenres %}checked{% endif %}>
+                                {{ genre }}
+                            </label>
+                        {% endfor %}
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Pages</h4>
+                        <label class="filter-option">
+                            <input type="radio" name="pages" value="0-200" 
+                                {% if selectedPages == '0-200' %}checked{% endif %}>
+                            Under 200
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="pages" value="200-400"
+                                {% if selectedPages == '200-400' %}checked{% endif %}>
+                            200 - 400
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="pages" value="400+"
+                                {% if selectedPages == '400+' %}checked{% endif %}>
+                            Over 400
+                        </label>
+                    </div>
+
+                    <div class="filter-group">
+                        <h4>Rating</h4>
+                        <label class="filter-option">
+                            <input type="radio" name="rating" value="4+"
+                                {% if selectedRating == '4+' %}checked{% endif %}>
+                            4+ stars
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="rating" value="3+"
+                                {% if selectedRating == '3+' %}checked{% endif %}>
+                            3+ stars
+                        </label>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <a href="{{ path('app_search', { query: query }) }}" class="btn btn-secondary">Clear Filters</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="search-content">
+            <div class="search-header">
+                <h1>Search Results for "{{ query }}"</h1>
+                <span class="result-count">{{ books|length }} results found</span>
+            </div>
+
+            {% if books|length > 0 %}
+                <div class="search-results">
+                    {% for book in books %}
+                        {% if book.approved %}
+                            <div class="search-result-card">
+                                <div class="book-image">
+                                    {% if book.imageFilename %}
+                                        <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" alt="{{ book.title }}" />
+                                    {% else %}
+                                        <img src="{{ asset('uploads/book_images/default-book-image.png') }}" alt="Default cover" />
+                                    {% endif %}
+                                </div>
+                                <div class="book-details">
+                                    <h2><a href="{{ path('app_book_show', { id: book.id }) }}">{{ book.title }}</a></h2>
+                                    <p class="book-author">by {{ book.author }}</p>
+                                    <p class="book-genre">{{ book.genre }}</p>
+                                    {% if book.summary %}
+                                        <p class="book-summary">{{ book.summary|length > 200 ? book.summary|slice(0, 200) ~ '...' : book.summary }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h2>No results found</h2>
+                    <p>Try adjusting your search terms or filters</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        {% block stylesheets %}
+        {% endblock %}
+
+        {% block javascripts %}
+        {% endblock %}
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="{{ path('app_books') }}">Home</a></li>
+                    <li>
+                        <a href="#">Books</a>
+                        <div class="dropdown">
+                            {% for genre in get_genres() %}
+                                {% if genre is not empty %}
+                                    <a href="{{ path('app_books_by_genre', { genre: genre }) }}">{{ genre }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="search-item">
+                        <form class="search-form" action="{{ path('app_search') }}" method="GET">
+                            <input type="text" name="query" placeholder="Search books...">
+                        </form>
+                    </li>
+                </ul>
+                <ul class="nav-list">
+                    {% if app.user is not null and app.user.id is not null %}
+                        <li>
+                            <a href="#" class="profile-dropdown-toggle">{{ app.user.username }}</a>
+                            <div class="dropdown">
+                                <a href="{{ path('app_profile') }}">Profile</a>
+                                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MODERATOR') %}
+                                    <a href="{{ path('admin_books') }}">Manage Books</a>
+                                    <a href="{{ path('admin_reviews') }}">Manage Reviews</a>
+                                    <a href="{{ path('admin_users') }}">Manage Users</a>
+                                {% endif %}
+                                <a href="{{ path('app_logout') }}">Logout</a>
+                            </div>
+                        </li>
+                    {% else %}
+                        <li><a href="{{ path('app_login') }}">Login</a></li>
+                        <li><a href="{{ path('app_register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+                {% block flashes %}
+        {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+                    {% endblock %}
+
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer>
+            <p>&copy; {{ "now"|date("Y") }} BookBuddy. All rights reserved.</p>
+        </footer>
+    </body>
+</html>

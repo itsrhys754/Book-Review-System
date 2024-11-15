@@ -1,0 +1,5 @@
+# services.yaml
+
+mysql:
+  type: mysql:10.0   # The MySQL version (ensure it's supported on Platform.sh)
+  disk: 1024           # Size of the persistent disk (in MB)

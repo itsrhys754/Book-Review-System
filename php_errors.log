@@ -1,0 +1,1 @@
+[15-Nov-2024 21:56:50 UTC] [critical] Error thrown while running command "app:create-admin". Message: "Not enough arguments (missing: "username, password")."

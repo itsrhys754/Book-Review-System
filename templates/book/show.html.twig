@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block body %}
+    <div class="book-detail-container">
+        <div class="book-header">
+            <div class="book-image-container">
+                {% if book.imageFilename %}
+                    <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" alt="{{ book.title }}" class="book-image"/>
+                {% else %}
+                    <img src="{{ asset('uploads/book_images/default-book-image.png') }}" alt="Default cover" class="book-image"/>
+                {% endif %}
+            </div>
+            
+            <div class="book-info">
+                <h1>{{ book.title }}</h1>
+                <div class="book-meta">
+                    <p class="author">By {{ book.author }}</p>
+                    <p class="genre">{{ book.genre }}</p>
+                    <p class="pages">{{ book.pages }} pages</p>
+                </div>
+                
+                <div class="book-summary">
+                    <h2>Summary</h2>
+                    <p>{{ book.summary }}</p>
+                </div>
+
+                {% if is_granted('ROLE_USER') %}
+                    {% set userReview = null %}
+                    {% for review in book.reviews %}
+                        {% if review.user == app.user %}
+                            {% set userReview = review %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if userReview %}
+                        <div class="review-actions">
+                            <button onclick="window.location.href='{{ path('app_review_edit', {id: userReview.id}) }}'" 
+                                    class="btn btn-primary">
+                                <i class="fas fa-edit me-1"></i> Edit
+                            </button>
+                        </div>
+                    {% else %}
+                        <button type="button" onclick="window.location.href='{{ path('app_review_new', { 'bookId': book.id }) }}'" class="btn btn-primary">Write a Review</button>
+                    {% endif %}
+                {% else %}
+                    <button type="button" onclick="window.location.href='{{ path('app_login') }}'" class="btn btn-secondary">Login to Review</button>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="reviews-section">
+            <div class="reviews-header">
+                <div class="reviews-title-section">
+                    <h2>Reader Reviews</h2>
+                    
+                    {# Calculate review statistics #}
+                    {% set totalRating = 0 %}
+                    {% set reviewCount = 0 %}
+                    {% set hasReviewed = false %}
+                    
+                    {% for review in book.reviews %}
+                        {% if review.approved %}
+                            {% set totalRating = totalRating + review.rating %}
+                            {% set reviewCount = reviewCount + 1 %}
+                        {% endif %}
+                        {% if is_granted('ROLE_USER') and review.user == app.user %}
+                            {% set hasReviewed = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if reviewCount > 0 %}
+                        <div class="rating-summary">
+                            <div class="rating-stats">
+                                <div class="average-rating">
+                                    <span class="rating-number">{{ (totalRating / reviewCount)|number_format(1) }}</span>
+                                    <div class="rating-details">
+                                        <span class="rating-max">/10</span>
+                                        <span class="rating-count">{{ reviewCount }} review{% if reviewCount != 1 %}s{% endif %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if is_granted('ROLE_USER') and not hasReviewed %}
+                                <button type="button" onclick="window.location.href='{{ path('app_review_new', { 'bookId': book.id }) }}'" class="btn btn-primary">Write a Review</button>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if reviewCount > 0 %}
+                <div class="reviews-container">
+                    {% for review in book.reviews %}
+                        {% if review.approved %}
+                            <div class="review-card">
+                                <div class="review-card-header">
+                                    <div class="reviewer-profile">
+                                        <div class="reviewer-avatar">
+                                            {{ review.user.username|first|upper }}
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <span class="reviewer-name">
+                                                <a href="{{ path('app_public_profile', {username: review.user.username}) }}">
+                                                    {{ review.user.username }}
+                                                </a>
+                                            </span>
+                                            <span class="review-date">Reviewed on {{ review.createdAt|date('M d, Y') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="review-rating">
+                                        <div class="rating-badge">
+                                            <span class="rating-value">{{ review.rating }}</span>
+                                            <span class="rating-max">/10</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="review-card-body">
+                                    <p class="review-content">{{ review.content }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-reviews">
+                    <div class="no-reviews-content">
+                        <i class="fas fa-book-open"></i>
+                        <h3>No Reviews Yet</h3>
+                        <p>{% if is_granted('ROLE_USER') %}Be the first to share your thoughts on this book!{% else %}Login to be the first to review this book!{% endif %}</p>
+                        {% if is_granted('ROLE_USER') and not hasReviewed %}
+                            <button type="button" onclick="window.location.href='{{ path('app_review_new', { 'bookId': book.id }) }}'" class="btn btn-primary">Write a Review</button>
+                        {% elseif not is_granted('ROLE_USER') %}
+                            <button type="button" onclick="window.location.href='{{ path('app_login') }}'" class="btn btn-secondary">Login to Review</button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if book.user == app.user %}
+            <a href="{{ path('app_book_edit', {'id': book.id}) }}" class="btn btn-secondary">Edit Book</a>
+        {% endif %}
+    </div>
+{% endblock %}

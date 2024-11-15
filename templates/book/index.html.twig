@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Books{% endblock %}
+
+{% block body %}
+    <div>
+        <button type="button" class="btn btn-primary" onclick="window.location.href='{{ path('app_book_new') }}'">Add New Book</button> {# Button to add a new book #}
+
+        {% for genre, books in groupedBooks %}
+            {% set approvedBooks = books|filter(book => book.approved) %} {# Filter approved books #}
+            {% if genre is not empty and approvedBooks|length > 0 %}  {# Check if the genre is not empty and has approved books #}
+                <h2>
+                    <a href="{{ path('app_books_by_genre', { genre: genre }) }}" class="genre-link">
+                        {{ genre }}
+                    </a>
+                </h2>
+                <div class="book-container">
+                    {% for book in approvedBooks %}
+                        <div class="book-item">
+                            <a href="{{ path('app_book_show', { id: book.id }) }}">
+                                {% if book.imageFilename %}
+                                    <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" alt="{{ book.title }} image" class="book-image" />
+                                {% else %}
+                                    <img src="{{ asset('uploads/book_images/default-book-image.png') }}" alt="Default image" class="book-image" /> {# Default image #}
+                                {% endif %}
+                            </a>
+                            <a href="{{ path('app_book_show', { id: book.id }) }}" class="book-title">{{ book.title }}</a>
+                            <p class="book-author">{{ book.author }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% else %}
+            <p>No books available.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

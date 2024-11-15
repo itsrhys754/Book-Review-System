@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ profileUser.username }}'s Profile{% endblock %}
+
+{% block body %}
+    <div class="profile-wrapper">
+        <div class="profile-header">
+            <h1>{{ profileUser.username }}'s Profile</h1>
+            {% if profileUser.avatarFilename %}
+                <img src="{{ asset('uploads/avatars/' ~ profileUser.avatarFilename) }}" alt="Avatar" class="profile-avatar">
+            {% endif %}
+        </div>
+        
+        <div class="profile-content">
+            <div class="reviews-section">
+                <h2>Books Added</h2>
+                {% if books|length > 0 %}
+                    <div class="review-grid">
+                        {% for book in books %}
+                            {% if book.approved %}
+                                <div class="review-card">
+                                    {% if book.imageFilename %}
+                                        <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" 
+                                             alt="{{ book.title }}" class="book-image-sm">
+                                    {% endif %}
+                                    <div class="book-details">
+                                        <h3><a href="{{ path('app_book_show', {id: book.id}) }}">{{ book.title }}</a></h3>
+                                        <p>by {{ book.author }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No books added yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="reviews-section">
+                <h2>Reviews Written</h2>
+                {% if reviews|length > 0 %}
+                    <div class="review-grid">
+                        {% for review in reviews %}
+                            {% if review.approved %}
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <h3>
+                                            <a href="{{ path('app_book_show', {id: review.book.id}) }}">
+                                                {{ review.book.title }}
+                                            </a>
+                                        </h3>
+                                        <div class="review-meta">
+                                            <span class="review-date">{{ review.createdAt|date('M d, Y') }}</span>
+                                            <span class="review-rating">Rating: {{ review.rating }}/10</span>
+                                        </div>
+                                    </div>
+                                    <div class="review-content">
+                                        {{ review.content }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No reviews written yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

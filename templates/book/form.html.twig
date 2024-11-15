@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ editing ? 'Edit Book' : 'Add New Book' }}{% endblock %}
+
+{% block body %}
+    <div class="form-wrapper">
+    {% block flashes %}
+            {{ parent() }}
+        {% endblock %}
+        <h1>{{ editing ? 'Edit Book' : 'Add New Book' }}</h1>
+        {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data', 'class': 'registration-form' } }) }}
+            <div class="form-group">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.title) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.author) }}
+                {{ form_widget(form.author, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.author) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.pages) }}
+                {{ form_widget(form.pages, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.pages) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.summary) }}
+                {{ form_widget(form.summary, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.summary) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.genre) }}
+                {{ form_widget(form.genre, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.genre) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.imageFilename) }}
+                {{ form_widget(form.imageFilename, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.imageFilename) }}
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save Book</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
