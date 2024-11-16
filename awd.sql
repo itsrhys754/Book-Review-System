@@ -35,7 +35,7 @@ CREATE TABLE `book` (
   PRIMARY KEY (`id`),
   KEY `IDX_CBE5A331A76ED395` (`user_id`),
   CONSTRAINT `FK_CBE5A331A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `book` (
 
 LOCK TABLES `book` WRITE;
 /*!40000 ALTER TABLE `book` DISABLE KEYS */;
-INSERT INTO `book` VALUES (1,1,'Test','test',200,'Great book','Fiction',1,'6737c3848d470.jpg');
+INSERT INTO `book` VALUES (1,1,'Test','test',200,'Great book','Fiction',1,'6737c3848d470.jpg'),(2,1,'aa','aa',77,'980jis','Non-Fiction',1,NULL),(3,2,'aa','aa',22,'aa','Fiction',0,NULL),(4,1,'sdsddsa','sasdas',22,'asdsa','Fiction',1,NULL),(5,1,'11','aa',22,'aa','Biography',0,NULL);
 /*!40000 ALTER TABLE `book` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,7 +69,6 @@ CREATE TABLE `doctrine_migration_versions` (
 
 LOCK TABLES `doctrine_migration_versions` WRITE;
 /*!40000 ALTER TABLE `doctrine_migration_versions` DISABLE KEYS */;
-INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20241115214303','2024-11-15 21:43:09',60);
 /*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,7 +92,7 @@ CREATE TABLE `review` (
   KEY `IDX_794381C6A76ED395` (`user_id`),
   CONSTRAINT `FK_794381C616A2B381` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`),
   CONSTRAINT `FK_794381C6A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +101,7 @@ CREATE TABLE `review` (
 
 LOCK TABLES `review` WRITE;
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
-INSERT INTO `review` VALUES (1,1,1,'Great',10,'2024-11-15 21:57:24',1);
+INSERT INTO `review` VALUES (1,1,1,'Great',10,'2024-11-15 21:57:24',1),(2,2,1,'GREAT',10,'2024-11-16 01:44:26',1),(3,4,1,'aa',10,'2024-11-16 01:45:30',1);
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -119,9 +118,11 @@ CREATE TABLE `user` (
   `roles` json NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `avatar_filename` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_active` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +131,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Rhys','[]','$2y$13$4C43MFYfBQpUpn/Iv9BZc.7DKyfUhsBbAuM4KsAN4xQv1faHdrlGK','6737c27bc14e5.jpg'),(2,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$/KtOYh8sa09hz/Hob4VmZOxnp7LwZVC9FXhtZKyJCNhCpQc6MG4Hq',NULL);
+INSERT INTO `user` VALUES (1,'Rhys','[]','$2y$13$4C43MFYfBQpUpn/Iv9BZc.7DKyfUhsBbAuM4KsAN4xQv1faHdrlGK','6737c27bc14e5.jpg','',0),(2,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$/KtOYh8sa09hz/Hob4VmZOxnp7LwZVC9FXhtZKyJCNhCpQc6MG4Hq',NULL,'',0),(3,'Test','[]','$2y$13$RhqNj4lAtpzeLQQk/uWEL.AAjLj9inLL.fquh1e1mayAqJF5NOiGO',NULL,'',0),(4,'Rhys2','[]','$2y$13$gHslB30OV5os2QqlWMb7C.SWIQeUnRn5kxiBOTgY..4tKfH.EZsyi',NULL,'rhysgregory90@gmail.com',0),(5,'Rhystest','[]','$2y$13$VTEBtkxEXiGe46MmGh5C1OcQKMXUkufSHdPWfeZ8YBNSEyDmbZHOG',NULL,'rhysgregory2@gmail.com',0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +144,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-15 22:02:12
+-- Dump completed on 2024-11-16  2:25:04

@@ -11,6 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface; 
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface; 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class RegistrationController extends AbstractController
 {
@@ -18,7 +20,8 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer
     ): Response {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -45,7 +48,6 @@ class RegistrationController extends AbstractController
                         );
                         $user->setAvatarFilename($newFilename); 
                     } catch (FileException $e) {
-                        // Log the specific file upload error
                         error_log('Avatar upload error: ' . $e->getMessage());
                         $this->addFlash('danger', 'An error occurred while uploading your avatar.');
                     }
@@ -62,6 +64,17 @@ class RegistrationController extends AbstractController
                     ]);
                 }
 
+                // Check if email already exists
+                $existingEmail = $entityManager->getRepository(User::class)
+                    ->findOneBy(['email' => $user->getEmail()]);
+                
+                if ($existingEmail) {
+                    $this->addFlash('danger', 'This email is already registered. Please choose another one.');
+                    return $this->render('registration/register.html.twig', [
+                        'form' => $form->createView(),
+                    ]);
+                }
+
                 // Hash the password
                 $hashedPassword = $passwordHasher->hashPassword(
                     $user,
@@ -73,11 +86,20 @@ class RegistrationController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $this->addFlash('success', 'Registration successful! You can now log in.');
+                // Send activation email
+                $activationLink = $this->getParameter('APP_URL') . $this->generateUrl('app_activate', ['token' => $user->getActivationToken()]);
+                $email = (new Email())
+                    ->from('noreply@yourdomain.com')
+                    ->to($user->getEmail())
+                    ->subject('Account Activation')
+                    ->html('<p>Click the link below to activate your account:</p><p><a href="' . $activationLink . '">' . $activationLink . '</a></p>');
+
+                $mailer->send($email);
+
+                $this->addFlash('success', 'Registration successful! Please check your email to activate your account.');
                 return $this->redirectToRoute('app_login');
 
             } catch (\Exception $e) {
-                // Log the actual error
                 error_log('Registration error: ' . $e->getMessage());
                 $this->addFlash('danger', 'An error occurred during registration. Please try again.');
                 return $this->render('registration/register.html.twig', [

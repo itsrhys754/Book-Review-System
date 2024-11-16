@@ -29,6 +29,19 @@
                 {% endif %}
             </div>
             <div class="form-group">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email, { 
+                    'attr': { 
+                        'class': 'form-control' ~ (form.email.vars.valid ? '' : ' is-invalid')
+                    } 
+                }) }}
+                {% if not form.email.vars.valid %}
+                    <div class="invalid-feedback">
+                        {{ form_errors(form.email) }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
                 {{ form_label(form.password) }}
                 <div class="password-container">
                     {{ form_widget(form.password, { 

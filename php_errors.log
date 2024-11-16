@@ -1,1 +1,45 @@
 [15-Nov-2024 21:56:50 UTC] [critical] Error thrown while running command "app:create-admin". Message: "Not enough arguments (missing: "username, password")."
+[16-Nov-2024 02:00:33 UTC] [critical] Error thrown while running command "doctrine:schema:update --force". Message: "An exception occurred while executing a query: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '' for key 'user.UNIQ_8D93D649E7927C74'"
+[16-Nov-2024 02:00:56 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'book' already exists"
+[16-Nov-2024 02:15:43 UTC] PHP Fatal error:  Uncaught Symfony\Component\Dotenv\Exception\FormatException: A value containing spaces must be surrounded by quotes in "/Users/rhysgregory/awd/.env" at line 33.
+...p@smtp.gmail.com:587\n...
+                      ^ line 33 offset 1686 in /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php:547
+Stack trace:
+#0 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(373): Symfony\Component\Dotenv\Dotenv->createFormatException('A value contain...')
+#1 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(250): Symfony\Component\Dotenv\Dotenv->lexValue()
+#2 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(563): Symfony\Component\Dotenv\Dotenv->parse('# In all enviro...', '/Users/rhysgreg...')
+#3 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(106): Symfony\Component\Dotenv\Dotenv->doLoad(false, Array)
+#4 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(150): Symfony\Component\Dotenv\Dotenv->loadEnv('/Users/rhysgreg...', 'APP_ENV', 'dev', Array, false)
+#5 /Users/rhysgregory/awd/vendor/symfony/runtime/SymfonyRuntime.php(107): Symfony\Component\Dotenv\Dotenv->bootEnv('/Users/rhysgreg...', 'dev', Array, false)
+#6 /Users/rhysgregory/awd/vendor/autoload_runtime.php(16): Symfony\Component\Runtime\SymfonyRuntime->__construct(Array)
+#7 /Users/rhysgregory/awd/bin/console(15): require_once('/Users/rhysgreg...')
+#8 {main}
+  thrown in /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php on line 547
+[16-Nov-2024 02:16:12 UTC] PHP Fatal error:  Uncaught Symfony\Component\Dotenv\Exception\FormatException: A value containing spaces must be surrounded by quotes in "/Users/rhysgregory/awd/.env" at line 33.
+...p@smtp.gmail.com:587\n###< symfony/mailer...
+                      ^ line 33 offset 1686 in /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php:547
+Stack trace:
+#0 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(373): Symfony\Component\Dotenv\Dotenv->createFormatException('A value contain...')
+#1 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(250): Symfony\Component\Dotenv\Dotenv->lexValue()
+#2 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(563): Symfony\Component\Dotenv\Dotenv->parse('# In all enviro...', '/Users/rhysgreg...')
+#3 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(106): Symfony\Component\Dotenv\Dotenv->doLoad(false, Array)
+#4 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(150): Symfony\Component\Dotenv\Dotenv->loadEnv('/Users/rhysgreg...', 'APP_ENV', 'dev', Array, false)
+#5 /Users/rhysgregory/awd/vendor/symfony/runtime/SymfonyRuntime.php(107): Symfony\Component\Dotenv\Dotenv->bootEnv('/Users/rhysgreg...', 'dev', Array, false)
+#6 /Users/rhysgregory/awd/vendor/autoload_runtime.php(16): Symfony\Component\Runtime\SymfonyRuntime->__construct(Array)
+#7 /Users/rhysgregory/awd/bin/console(15): require_once('/Users/rhysgreg...')
+#8 {main}
+  thrown in /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php on line 547
+[16-Nov-2024 02:16:14 UTC] PHP Fatal error:  Uncaught Symfony\Component\Dotenv\Exception\FormatException: A value containing spaces must be surrounded by quotes in "/Users/rhysgregory/awd/.env" at line 33.
+...p@smtp.gmail.com:587\n###< symfony/mailer...
+                      ^ line 33 offset 1686 in /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php:547
+Stack trace:
+#0 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(373): Symfony\Component\Dotenv\Dotenv->createFormatException('A value contain...')
+#1 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(250): Symfony\Component\Dotenv\Dotenv->lexValue()
+#2 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(563): Symfony\Component\Dotenv\Dotenv->parse('# In all enviro...', '/Users/rhysgreg...')
+#3 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(106): Symfony\Component\Dotenv\Dotenv->doLoad(false, Array)
+#4 /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php(150): Symfony\Component\Dotenv\Dotenv->loadEnv('/Users/rhysgreg...', 'APP_ENV', 'dev', Array, false)
+#5 /Users/rhysgregory/awd/vendor/symfony/runtime/SymfonyRuntime.php(107): Symfony\Component\Dotenv\Dotenv->bootEnv('/Users/rhysgreg...', 'dev', Array, false)
+#6 /Users/rhysgregory/awd/vendor/autoload_runtime.php(16): Symfony\Component\Runtime\SymfonyRuntime->__construct(Array)
+#7 /Users/rhysgregory/awd/bin/console(15): require_once('/Users/rhysgreg...')
+#8 {main}
+  thrown in /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php on line 547

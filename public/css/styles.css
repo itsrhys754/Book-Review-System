@@ -47,7 +47,7 @@ body {
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-    color: var(--text-dark);
+    color: var(--text-light);
     line-height: 1.2;
     margin-bottom: 1rem;
 }
@@ -445,12 +445,6 @@ input:focus-visible {
 
 .review-header h3 {
     margin: 0 0 0.5rem 0;
-}
-
-.review-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
 }
 
 .review-card {
@@ -1015,7 +1009,7 @@ input:focus-visible {
 }
 
 /* Styles for Manage Reviews Page */
-.review-grid {
+.manage-grid {
     display: flex;
     flex-direction: column;
     gap: 1rem; /* Space between review cards */
@@ -1045,7 +1039,7 @@ input:focus-visible {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-    .review-grid {
+    .manage-grid {
         flex-direction: column; /* Stack review cards vertically */
     }
 
