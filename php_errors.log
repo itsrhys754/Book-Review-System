@@ -43,3 +43,5 @@ Stack trace:
 #7 /Users/rhysgregory/awd/bin/console(15): require_once('/Users/rhysgreg...')
 #8 {main}
   thrown in /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php on line 547
+[16-Nov-2024 02:29:02 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'book' already exists"
+[16-Nov-2024 02:29:37 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'book' already exists"

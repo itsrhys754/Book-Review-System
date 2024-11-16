@@ -21,8 +21,8 @@ class ActivationController extends AbstractController
             ]);
         }
 
-        // Activate the user account
-        $user->setIsActive(true); 
+        $user->setIsActive(true);
+        $user->setActivationToken(null);
         $entityManager->flush();
 
         return $this->render('activation/success.html.twig', [

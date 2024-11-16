@@ -75,6 +75,10 @@ class RegistrationController extends AbstractController
                     ]);
                 }
 
+                // Generate a unique activation token
+                $activationToken = bin2hex(random_bytes(16)); // Generates a random token
+                $user->setActivationToken($activationToken);
+
                 // Hash the password
                 $hashedPassword = $passwordHasher->hashPassword(
                     $user,
@@ -87,7 +91,7 @@ class RegistrationController extends AbstractController
                 $entityManager->flush();
 
                 // Send activation email
-                $activationLink = $this->getParameter('APP_URL') . $this->generateUrl('app_activate', ['token' => $user->getActivationToken()]);
+                $activationLink = $this->getParameter('APP_URL') . $this->generateUrl('app_activate', ['token' => $activationToken]);
                 $email = (new Email())
                     ->from('noreply@yourdomain.com')
                     ->to($user->getEmail())

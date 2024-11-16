@@ -120,6 +120,7 @@ CREATE TABLE `user` (
   `avatar_filename` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_active` tinyint(1) NOT NULL,
+  `activation_token` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -131,7 +132,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Rhys','[]','$2y$13$4C43MFYfBQpUpn/Iv9BZc.7DKyfUhsBbAuM4KsAN4xQv1faHdrlGK','6737c27bc14e5.jpg','',0),(2,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$/KtOYh8sa09hz/Hob4VmZOxnp7LwZVC9FXhtZKyJCNhCpQc6MG4Hq',NULL,'',0),(3,'Test','[]','$2y$13$RhqNj4lAtpzeLQQk/uWEL.AAjLj9inLL.fquh1e1mayAqJF5NOiGO',NULL,'',0),(4,'Rhys2','[]','$2y$13$gHslB30OV5os2QqlWMb7C.SWIQeUnRn5kxiBOTgY..4tKfH.EZsyi',NULL,'rhysgregory90@gmail.com',0),(5,'Rhystest','[]','$2y$13$VTEBtkxEXiGe46MmGh5C1OcQKMXUkufSHdPWfeZ8YBNSEyDmbZHOG',NULL,'rhysgregory2@gmail.com',0);
+INSERT INTO `user` VALUES (1,'Rhys','[]','$2y$13$4C43MFYfBQpUpn/Iv9BZc.7DKyfUhsBbAuM4KsAN4xQv1faHdrlGK','6737c27bc14e5.jpg','',0,NULL),(2,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$/KtOYh8sa09hz/Hob4VmZOxnp7LwZVC9FXhtZKyJCNhCpQc6MG4Hq',NULL,'',0,NULL),(3,'Test','[]','$2y$13$RhqNj4lAtpzeLQQk/uWEL.AAjLj9inLL.fquh1e1mayAqJF5NOiGO',NULL,'',0,NULL),(4,'Rhys2','[]','$2y$13$gHslB30OV5os2QqlWMb7C.SWIQeUnRn5kxiBOTgY..4tKfH.EZsyi',NULL,'rhysgregory90@gmail.com',0,NULL),(5,'Rhystest','[]','$2y$13$VTEBtkxEXiGe46MmGh5C1OcQKMXUkufSHdPWfeZ8YBNSEyDmbZHOG',NULL,'rhysgregory2@gmail.com',0,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -144,4 +145,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-16  2:25:04
+-- Dump completed on 2024-11-16  2:33:15

@@ -58,6 +58,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isActive = false;
 
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $activationToken = null;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -200,10 +203,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getActivationToken(): string
-    {
-        return bin2hex(random_bytes(16)); // Generate a random token
-    }
 
     public function setIsActive(bool $isActive): static
     {
@@ -215,5 +214,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function isActive(): bool
     {
         return $this->isActive;
+    }
+
+    public function getActivationToken(): ?string
+    {
+        return $this->activationToken;
+    }
+
+    public function setActivationToken(?string $activationToken): static
+    {
+        $this->activationToken = $activationToken;
+
+        return $this;
     }
 }
