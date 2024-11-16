@@ -15,6 +15,13 @@ use App\Form\UserEditType;
 
 class ProfileController extends AbstractController
 {
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     #[Route("/profile", name:"app_profile")]
     public function profile(): Response
     {
@@ -165,5 +172,30 @@ class ProfileController extends AbstractController
         return $this->render('profile/edit.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route("/profile/notification/delete/{index}", name:"delete_notification")]
+    public function deleteNotification(Request $request, int $index): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('User not found.');
+        }
+
+        $notifications = $user->getNotifications();
+        if (isset($notifications[$index])) {
+            unset($notifications[$index]);
+            $user->setNotifications(array_values($notifications)); 
+            $this->entityManager->flush();
+            $this->addFlash('success', 'Notification deleted successfully.');
+        } else {
+            $this->addFlash('error', 'Notification not found.');
+        }
+
+        // Get the referer URL or fallback to app_profile
+        // This is to ensure that the user is redirected back to the correct page after deleting a notification
+        $returnUrl = $request->headers->get('referer', $this->generateUrl('app_profile'));
+        
+        return $this->redirect($returnUrl);
     }
 }

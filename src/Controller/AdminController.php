@@ -62,6 +62,12 @@ class AdminController extends AbstractController
         // Add a success message to the session flash
         $this->addFlash('success', 'Book has been approved successfully.');
 
+        // Add a notification for the user that their book has been approved
+        $user = $book->getUser();
+        $user->addNotification('Your book has been approved!');
+        // Persist the user entity to save the notification
+        $this->userRepository->getEntityManager()->flush();
+
         // Redirect to the manage books page
         return $this->redirectToRoute('admin_books');
     }
@@ -71,7 +77,6 @@ class AdminController extends AbstractController
     {
         // Check if the current admin is the owner of the review
         if ($review->getUser() === $this->getUser()) {
-            // Add an error message if the admin tries to approve their own review
             $this->addFlash('error', 'You cannot approve your own review. Another administrator must review it.');
             return $this->redirectToRoute('admin_reviews');
         }
@@ -81,8 +86,15 @@ class AdminController extends AbstractController
         // Persist the changes to the database
         $this->reviewRepository->getEntityManager()->flush();
 
-        // Add a success message to the session flash
+        // Add a success message to the session flash for the admin
         $this->addFlash('success', 'Review has been approved successfully.');
+
+        // Notify the user that their review has been approved
+        $user = $review->getUser();
+        $user->addNotification('Your review has been approved!');
+        
+        // Persist the user entity to save the notification
+        $this->userRepository->getEntityManager()->flush();
 
         // Redirect to the manage reviews page
         return $this->redirectToRoute('admin_reviews');
@@ -98,6 +110,12 @@ class AdminController extends AbstractController
         // Add a success message to the session flash
         $this->addFlash('success', 'Book deleted successfully.');
 
+        // Notify the user that their book has been deleted
+        $user = $book->getUser();
+        $user->addNotification('Your book has not been approved.');
+        // Persist the user entity to save the notification
+        $this->userRepository->getEntityManager()->flush();
+
         // Redirect to the manage books page
         return $this->redirectToRoute('admin_books');
     }
@@ -111,6 +129,12 @@ class AdminController extends AbstractController
 
         // Add a success message to the session flash
         $this->addFlash('success', 'Review deleted successfully.');
+
+        // Notify the user that their review has been deleted
+        $user = $review->getUser();
+        $user->addNotification('Your review has not been approved.');
+        // Persist the user entity to save the notification
+        $this->userRepository->getEntityManager()->flush();
 
         // Redirect to the manage reviews page
         return $this->redirectToRoute('admin_reviews');
@@ -202,6 +226,11 @@ class AdminController extends AbstractController
 
         // Add a success message to the session flash
         $this->addFlash('success', 'User has been promoted to moderator successfully.');
+
+        // Notify the user that they have been promoted to moderator
+        $user->addNotification('You have been promoted to moderator!');
+        // Persist the user entity to save the notification
+        $this->userRepository->getEntityManager()->flush();
 
         // Redirect to the manage users page
         return $this->redirectToRoute('admin_users');

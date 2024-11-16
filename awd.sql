@@ -69,6 +69,7 @@ CREATE TABLE `doctrine_migration_versions` (
 
 LOCK TABLES `doctrine_migration_versions` WRITE;
 /*!40000 ALTER TABLE `doctrine_migration_versions` DISABLE KEYS */;
+INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20241116190047','2024-11-16 19:06:23',48),('DoctrineMigrations\\Version20241116190927','2024-11-16 19:23:52',47),('DoctrineMigrations\\Version20241116192348','2024-11-16 19:23:52',7);
 /*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,7 +102,7 @@ CREATE TABLE `review` (
 
 LOCK TABLES `review` WRITE;
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
-INSERT INTO `review` VALUES (1,1,1,'Great',10,'2024-11-15 21:57:24',1),(2,2,1,'GREAT',10,'2024-11-16 01:44:26',1),(3,4,1,'aa',10,'2024-11-16 01:45:30',1);
+INSERT INTO `review` VALUES (1,1,1,'Great',8,'2024-11-15 21:57:24',1),(2,2,1,'GREAT',9,'2024-11-16 01:44:26',1),(3,4,1,'aa',10,'2024-11-16 01:45:30',1);
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,10 +119,10 @@ CREATE TABLE `user` (
   `roles` json NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `avatar_filename` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notifications` json NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +131,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Rhys','[]','$2y$13$4C43MFYfBQpUpn/Iv9BZc.7DKyfUhsBbAuM4KsAN4xQv1faHdrlGK','6737c27bc14e5.jpg',''),(2,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$/KtOYh8sa09hz/Hob4VmZOxnp7LwZVC9FXhtZKyJCNhCpQc6MG4Hq',NULL,''),(3,'Test','[]','$2y$13$RhqNj4lAtpzeLQQk/uWEL.AAjLj9inLL.fquh1e1mayAqJF5NOiGO',NULL,'');
+INSERT INTO `user` VALUES (1,'Rhys','[]','$2y$13$4C43MFYfBQpUpn/Iv9BZc.7DKyfUhsBbAuM4KsAN4xQv1faHdrlGK','6737c27bc14e5.jpg','[]'),(2,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$/KtOYh8sa09hz/Hob4VmZOxnp7LwZVC9FXhtZKyJCNhCpQc6MG4Hq',NULL,'[]'),(3,'Test','[]','$2y$13$RhqNj4lAtpzeLQQk/uWEL.AAjLj9inLL.fquh1e1mayAqJF5NOiGO',NULL,'[]'),(8,'Testuser','[]','$2y$13$.rW7g7N8bWijynF.Lt9Ws.WlLnaGkHN.XE4SB9R3hfZd0Ps6lQ4Dm',NULL,'[]');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +144,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-16  2:59:39
+-- Dump completed on 2024-11-16 20:16:43

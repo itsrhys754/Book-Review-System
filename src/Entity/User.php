@@ -49,10 +49,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $avatarFilename = null;
 
+    #[ORM\Column(type: "json")]
+    private array $notifications = [];
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->books = new ArrayCollection();
+        $this->notifications = [];
     }
 
     public function getId(): ?int
@@ -176,6 +180,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatarFilename(?string $avatarFilename): self
     {
         $this->avatarFilename = $avatarFilename;
+        return $this;
+    }
+
+     /**
+     * @return array<array-key, array{message: string, createdAt: \DateTime, isRead: bool}>
+     */
+    public function getNotifications(): array
+    {
+        return $this->notifications ?? []; // Provide default empty array if null
+    }
+
+    public function addNotification(string $message): static
+    {
+        if (!is_array($this->notifications)) {
+            $this->notifications = [];
+        }
+
+        $this->notifications[] = [
+            'message' => $message,
+            'isRead' => false,
+        ];
+
+        return $this;
+    }
+
+    public function clearNotifications(): static
+    {
+        $this->notifications = [];
+        return $this;
+    }
+
+    public function markNotificationAsRead(int $index): static
+    {
+        if (isset($this->notifications[$index])) {
+            $this->notifications[$index]['isRead'] = true;
+        }
+        return $this;
+    }
+
+    public function setNotifications(array $notifications): static
+    {
+        $this->notifications = $notifications;
         return $this;
     }
 }

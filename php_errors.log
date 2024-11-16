@@ -45,3 +45,21 @@ Stack trace:
   thrown in /Users/rhysgregory/awd/vendor/symfony/dotenv/Dotenv.php on line 547
 [16-Nov-2024 02:29:02 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'book' already exists"
 [16-Nov-2024 02:29:37 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'book' already exists"
+[16-Nov-2024 18:52:57 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'book' already exists"
+[16-Nov-2024 19:00:54 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'book' already exists"
+[16-Nov-2024 19:05:03 UTC] [critical] Error thrown while running command "'cache:ckear'". Message: "Command "cache:ckear" is not defined.
+
+Did you mean one of these?
+    cache:clear
+    cache:pool:clear
+    cache:pool:delete
+    cache:pool:invalidate-tags
+    cache:pool:list
+    cache:pool:prune
+    cache:warmup"
+[16-Nov-2024 19:05:18 UTC] [critical] Error thrown while running command "'migration:diff'". Message: "There are no commands defined in the "migration" namespace.
+
+Did you mean this?
+    doctrine:migrations"
+[16-Nov-2024 19:08:17 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[22004]: Null value not allowed: 1138 Invalid use of NULL value"
+[16-Nov-2024 19:09:33 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[22004]: Null value not allowed: 1138 Invalid use of NULL value"

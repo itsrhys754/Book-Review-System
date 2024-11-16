@@ -46,7 +46,7 @@ class Book
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageFilename = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
