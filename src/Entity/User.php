@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
@@ -49,17 +48,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $avatarFilename = null;
-
-    #[ORM\Column(type: 'string', unique: true)]
-    #[Assert\NotBlank]
-    #[Assert\Email]
-    private ?string $email = null;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $isActive = false;
-
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $activationToken = null;
 
     public function __construct()
     {
@@ -188,43 +176,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatarFilename(?string $avatarFilename): self
     {
         $this->avatarFilename = $avatarFilename;
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-
-    public function setIsActive(bool $isActive): static
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->isActive;
-    }
-
-    public function getActivationToken(): ?string
-    {
-        return $this->activationToken;
-    }
-
-    public function setActivationToken(?string $activationToken): static
-    {
-        $this->activationToken = $activationToken;
-
         return $this;
     }
 }
