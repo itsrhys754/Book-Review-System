@@ -917,7 +917,6 @@ input:focus-visible {
 
 
 /* Responsive Styles */
-/* Responsive Styles */
 @media (max-width: 768px) {
     header nav {
         flex-direction: column;
@@ -932,24 +931,8 @@ input:focus-visible {
         margin: 10px 0;
     }
 
-    .book-header {
-        flex-direction: column;
-    }
-
-    .book-info {
-        padding: 10px;
-    }
-
-    .book-container {
-        flex-direction: column;
-    }
-
-    .book-item {
-        flex: 1 1 100%;
-    }
-
- 
     
+
 
     /* Book Detail Page */
         .book-header {
@@ -991,4 +974,43 @@ input:focus-visible {
             padding: 0 1rem;
             margin: 1rem auto;
         }
+}
+
+/* Responsive Styles for Search Results Page */
+@media (max-width: 768px) {
+    .search-page-container {
+        grid-template-columns: 1fr; /* Stack items in a single column */
+    }
+
+    .search-result-card {
+        grid-template-columns: 1fr; /* Make each card full width */
+    }
+
+    .search-result-card .book-image {
+        width: 100%; /* Make book image responsive */
+    }
+
+    .search-result-card .book-image img {
+        height: auto; /* Maintain aspect ratio */
+    }
+
+    .search-header h1 {
+        font-size: 1.5rem; /* Adjust header size */
+    }
+
+    .result-count {
+        font-size: 0.8rem; /* Smaller font size for mobile */
+    }
+
+    .no-results {
+        padding: 2rem 1rem; /* Adjust padding for smaller screens */
+    }
+
+    .no-results h2 {
+        font-size: 1.5rem; /* Adjust heading size */
+    }
+
+    .no-results p {
+        font-size: 0.85rem; /* Smaller font size for mobile */
+    }
 }
