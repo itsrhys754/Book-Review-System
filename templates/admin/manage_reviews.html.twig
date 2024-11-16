@@ -20,18 +20,18 @@
                 {% else %}
                     <div class="review-grid">
                         {% for review in pendingReviews %}
-                            <div class="card mb-3">
-                                <div class="card-body">
+                            <div class="review-card mb-3">
+                                <div class="review-card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="book-image me-3">
                                             {% if review.book.imageFilename %}
                                                 <img src="{{ asset('uploads/book_images/' ~ review.book.imageFilename) }}" 
                                                      alt="{{ review.book.title }}"
-                                                     style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                                     class="book-cover">
                                             {% else %}
                                                 <img src="{{ asset('uploads/book_images/default-book-image.png') }}" 
                                                      alt="Default cover"
-                                                     style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
+                                                     class="book-cover">
                                             {% endif %}
                                         </div>
                                         <span class="fw-medium">{{ review.book.title }}</span>
@@ -39,7 +39,7 @@
                                     <div class="review-rating">
                                         {{ review.rating }}/10
                                     </div>
-                                    <p>{{ review.content|slice(0, 100) }}{% if review.content|length > 100 %}...{% endif %}</p>
+                                    <p class="review-content">{{ review.content|slice(0, 100) }}{% if review.content|length > 100 %}...{% endif %}</p>
                                     <p class="submitted-by">
                                         Submitted by: <a href="{{ path('app_public_profile', { username: review.user.username }) }}">{{ review.user.username }}</a>
                                     </p>
