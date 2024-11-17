@@ -47,8 +47,10 @@
                                                     onclick="window.location.href='{{ path('admin_approve_book', { id: book.id }) }}'">
                                                 <i class="fas fa-check me-1"></i> Approve
                                             </button>
-                                            <button class="btn btn-danger" 
-                                                    onclick="if(confirm('Are you sure you want to delete this book?')) window.location.href='{{ path('admin_delete_book', { id: book.id }) }}'">
+                                            <button class="btn btn-danger delete-btn"
+                                                    data-url="{{ path('admin_delete_book', { id: book.id }) }}"
+                                                    data-title="Confirm Book Deletion"
+                                                    data-message="Are you sure you want to delete this book?">
                                                 <i class="fas fa-trash me-1"></i> Delete
                                             </button>
                                         </div>
@@ -61,4 +63,6 @@
             </div>
         </div>
     </div>
+
+    <script src="{{ asset('js/confirmation-modal.js') }}"></script>
 {% endblock %}

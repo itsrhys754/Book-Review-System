@@ -973,11 +973,11 @@ input:focus-visible {
 
 .blurred {
     filter: blur(5px);
-    cursor: not-allowed; /* Optional: Change cursor to indicate it's blurred */
+    cursor: not-allowed; /* Change cursor to indicate it's blurred */
 }
 
 .unblur-btn {
-    background-color: #ffc107; /* Bootstrap warning color */
+    background-color: #ffc107; 
     color: white;
     border: none;
     padding: 10px 15px;
@@ -987,13 +987,30 @@ input:focus-visible {
 }
 
 .unblur-btn:hover {
-    background-color: #e0a800; /* Darker shade on hover */
-    transform: scale(1.05); /* Slightly enlarge on hover */
+    background-color: #e0a800; 
+    transform: scale(1.05); 
 }
 
 .unblur-btn:focus {
-    outline: none; /* Remove default outline */
-    box-shadow: 0 0 5px rgba(255, 193, 7, 0.5); /* Add a glow effect */
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 193, 7, 0.5); 
+}
+
+.spoiler-check {
+    padding-left: 1.75rem;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-check-input {
+    position: absolute;
+    margin-top: 0.3rem;
+    margin-left: -1.75rem;
+}
+
+.form-check-label {
+    margin-bottom: 0;
+    cursor: pointer;
 }
 
 /* Responsive Styles */
