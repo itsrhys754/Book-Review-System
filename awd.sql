@@ -128,8 +128,9 @@ CREATE TABLE `vote` (
   KEY `IDX_5A108564A76ED395` (`user_id`),
   CONSTRAINT `vote_ibfk_1` FOREIGN KEY (`review_id`) REFERENCES `review` (`id`),
   CONSTRAINT `vote_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `vote_chk_1` CHECK ((`type` in (_utf8mb4'upvote',_utf8mb4'downvote')))
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `vote_chk_1` CHECK (`type` IN ('upvote', 'downvote'))
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
