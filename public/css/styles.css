@@ -417,7 +417,7 @@ input:focus-visible {
 
 .book-summary {
     background: #f8f9fa;
-    padding: 1.5rem;
+    padding-top: 1.5rem;
     border-radius: 8px;
 }
 
@@ -547,6 +547,41 @@ input:focus-visible {
     color: var(--text-gray);
     font-size: 0.9rem;
 }
+
+/* Review Filters */
+
+.review-filters {
+        margin: 0 1rem;
+    }
+
+    .review-filters .form-select {
+        min-width: 150px;
+        padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+        border: 1px solid #ced4da;
+    }
+
+    .rating-summary {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Additional styling for reviews container during loading */
+    .reviews-container {
+        min-height: 100px;
+        position: relative;
+    }
+
+    .reviews-container.loading::after {
+        content: 'Loading...';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #666;
+    }
 
 /* Rating Styles */
 .rating-summary {
@@ -849,7 +884,6 @@ input:focus-visible {
 
 
 /* Profile Edit Styles */
-
 .profile-edit-wrapper {
     max-width: 600px;
     margin: 2rem auto;
@@ -920,7 +954,47 @@ input:focus-visible {
     color: var(--primary-color);
 }
 
+.vote-btn {
+    background-color: transparent; /* Transparent background */
+    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 1.2em; /* Increase font size */
+    color: #007bff; /* Button color */
+    transition: color 0.3s; /* Smooth color transition */
+}
 
+.vote-btn:hover {
+    color: #0056b3; 
+}
+
+.vote-btn i {
+    margin-right: 2px; /* Space between icon and count */
+}
+
+.blurred {
+    filter: blur(5px);
+    cursor: not-allowed; /* Optional: Change cursor to indicate it's blurred */
+}
+
+.unblur-btn {
+    background-color: #ffc107; /* Bootstrap warning color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.unblur-btn:hover {
+    background-color: #e0a800; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.unblur-btn:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(255, 193, 7, 0.5); /* Add a glow effect */
+}
 
 /* Responsive Styles */
 @media (max-width: 768px) {
@@ -938,45 +1012,44 @@ input:focus-visible {
     }
 
     /* Book Detail Page */
-        .book-header {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-    
-        /* Book cover adjusts to fit mobile screens */
-        .book-cover {
-            max-width: 100%;
-            height: auto;
-        }
-    
-        /* Adjust typography for better readability on mobile */
-        .book-info h1 {
-            font-size: 2rem;
-        }
-    
-        .book-meta {
-            flex-direction: column;
-            gap: 1rem;
-            font-size: 1rem;
-        }
-    
-        .book-meta p {
-            margin: 0;
-        }
-    
-        .book-summary {
-            padding: 1rem;
-        }
-    
-        .book-summary h2 {
-            font-size: 1.25rem;
-        }
-    
-        /* Make sure the container has smaller margins on mobile */
-        .book-detail-container {
-            padding: 0 1rem;
-            margin: 1rem auto;
-        }
+    .book-header {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Book cover adjusts to fit mobile screens */
+    .book-cover {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Adjust typography for better readability on mobile */
+    .book-info h1 {
+        font-size: 2rem;
+    }
+
+    .book-meta {
+        flex-direction: column;
+        gap: 1rem;
+        font-size: 1rem;
+    }
+
+    .book-meta p {
+        margin: 0;
+    }
+
+    .book-summary {
+        padding-top: 1rem;
+    }
+
+    .book-summary h2 {
+        font-size: 1.25rem;
+    }
+
+    .book-detail-container {
+        padding: 0 1rem;
+        margin: 1rem auto;
+    }
 
 
 /* Responsive Styles for Search Results Page */
@@ -1015,59 +1088,78 @@ input:focus-visible {
     .no-results p {
         font-size: 0.85rem; 
     }
+
+    .rating-summary {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .reviews-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .review-filters {
+        flex-grow: 1;
+        max-width: 50%;
+    }
+
+    .review-filters .form-select {
+        width: 100%;
+    }
 }
 
 /* Styles for Manage Reviews Page */
-.manage-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem; /* Space between review cards */
-}
-
-.review-card {
-    background: var(--background-white);
-    border-radius: 8px;
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-}
-
-.review-card:hover {
-    box-shadow: var(--shadow-md);
-}
-
-.review-card-body {
-    padding: 1rem;
-}
-
-.book-cover {
-    width: 40px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 4px;
-}
-
     .manage-grid {
-        flex-direction: column; /* Stack review cards vertically */
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; 
     }
 
     .review-card {
-        width: 100%; /* Full width on mobile */
+        background: var(--background-white);
+        border-radius: 8px;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+    .review-card:hover {
+        box-shadow: var(--shadow-md);
+    }
+
+    .review-card-body {
+        padding: 1rem;
     }
 
     .book-cover {
-        width: 60px; /* Adjust image size for mobile */
-        height: 90px; /* Adjust image size for mobile */
+        width: 40px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .manage-grid {
+        flex-direction: column; 
+    }
+
+    .review-card {
+        width: 100%; 
+    }
+
+    .book-cover {
+        width: 60px; 
+        height: 90px; 
     }
 
     .review-rating {
-        font-size: 1rem; /* Adjust font size for mobile */
+        font-size: 1rem;
     }
 
     .review-content {
-        font-size: 0.9rem; /* Adjust font size for mobile */
+        font-size: 0.9rem; 
     }
 
     .submitted-by {
-        font-size: 0.8rem; /* Adjust font size for mobile */
+        font-size: 0.8rem; 
     }
 

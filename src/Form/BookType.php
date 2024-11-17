@@ -25,9 +25,16 @@ class BookType extends AbstractType
                 'choices' => [
                     'Fiction' => 'Fiction',
                     'Non-Fiction' => 'Non-Fiction',
+                    'Classic Literature' => 'Classic Literature',
                     'Mystery' => 'Mystery',
                     'Fantasy' => 'Fantasy',
                     'Biography' => 'Biography',
+                    'Science Fiction' => 'Science Fiction',
+                    'Romance' => 'Romance',
+                    'Thriller' => 'Thriller',
+                    'Young Adult' => 'Young Adult',
+                    'Children\'s' => 'Children\'s',
+                    'Other' => 'Other',
                 ],
                 'placeholder' => 'Select a genre',
             ])

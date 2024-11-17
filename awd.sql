@@ -35,7 +35,7 @@ CREATE TABLE `book` (
   PRIMARY KEY (`id`),
   KEY `IDX_CBE5A331A76ED395` (`user_id`),
   CONSTRAINT `FK_CBE5A331A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,33 +44,8 @@ CREATE TABLE `book` (
 
 LOCK TABLES `book` WRITE;
 /*!40000 ALTER TABLE `book` DISABLE KEYS */;
-INSERT INTO `book` VALUES (1,1,'Test','test',200,'Great book','Fiction',1,'6737c3848d470.jpg'),(2,1,'aa','aa',77,'980jis','Non-Fiction',1,NULL),(3,2,'aa','aa',22,'aa','Fiction',0,NULL),(4,1,'sdsddsa','sasdas',22,'asdsa','Fiction',1,NULL),(5,1,'11','aa',22,'aa','Biography',0,NULL);
+INSERT INTO `book` VALUES (6,9,'The Great Gatsby','F. Scott Fitzgerald',180,'A story of decadence and excess follows a cast of characters living in the fictional town of West Egg in the summer of 1922.','Classic Literature',1,'673a0f225db6f.jpg'),(7,10,'1984','George Orwell',328,'A dystopian social science fiction novel following Winston Smith in a totalitarian future society.','Science Fiction',1,'673a10627dbad.jpg'),(8,11,'Pride and Prejudice','Jane Austen',432,'The story follows the main character Elizabeth Bennet as she deals with issues of manners, upbringing, morality, education, and marriage.','Romance',1,'673a10d2ac757.jpg'),(9,9,'To Kill a Mockingbird','Harper Lee',281,'The story of racial injustice and the loss of innocence in the American South, told through the eyes of Scout Finch.','Classic Literature',1,'673a0f6cee8d7.jpg'),(10,10,'The Hobbit','J.R.R. Tolkien',310,'The tale of Bilbo Baggins, who embarks on a quest to help a group of dwarves reclaim their mountain home from a dragon.','Fantasy',1,'673a10909f56d.jpg'),(11,12,'Harry Potter and The Deathly Hollows','J.K. Rowling',510,'Wizards','Fiction',1,'673a0747032cf.jpg');
 /*!40000 ALTER TABLE `book` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `doctrine_migration_versions`
---
-
-DROP TABLE IF EXISTS `doctrine_migration_versions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `doctrine_migration_versions` (
-  `version` varchar(191) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `executed_at` datetime DEFAULT NULL,
-  `execution_time` int DEFAULT NULL,
-  PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `doctrine_migration_versions`
---
-
-LOCK TABLES `doctrine_migration_versions` WRITE;
-/*!40000 ALTER TABLE `doctrine_migration_versions` DISABLE KEYS */;
-INSERT INTO `doctrine_migration_versions` VALUES ('DoctrineMigrations\\Version20241116190047','2024-11-16 19:06:23',48),('DoctrineMigrations\\Version20241116190927','2024-11-16 19:23:52',47),('DoctrineMigrations\\Version20241116192348','2024-11-16 19:23:52',7);
-/*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -88,12 +63,13 @@ CREATE TABLE `review` (
   `rating` int NOT NULL,
   `created_at` datetime NOT NULL,
   `approved` tinyint(1) NOT NULL,
+  `contains_spoilers` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_794381C616A2B381` (`book_id`),
   KEY `IDX_794381C6A76ED395` (`user_id`),
   CONSTRAINT `FK_794381C616A2B381` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`),
   CONSTRAINT `FK_794381C6A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +78,7 @@ CREATE TABLE `review` (
 
 LOCK TABLES `review` WRITE;
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
-INSERT INTO `review` VALUES (1,1,1,'Great',8,'2024-11-15 21:57:24',1),(2,2,1,'GREAT',9,'2024-11-16 01:44:26',1),(3,4,1,'aa',10,'2024-11-16 01:45:30',1);
+INSERT INTO `review` VALUES (4,11,12,'Great',10,'2024-11-17 15:22:06',1,0),(5,11,10,'Average',7,'2024-11-17 15:23:10',1,0),(7,11,13,'This is such a great book!',8,'2024-11-17 16:02:53',1,1),(8,6,13,'AA',8,'2024-11-17 16:03:48',1,0),(9,9,12,'aa',8,'2024-11-17 18:25:49',1,1);
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +98,7 @@ CREATE TABLE `user` (
   `notifications` json NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,8 +107,39 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Rhys','[]','$2y$13$4C43MFYfBQpUpn/Iv9BZc.7DKyfUhsBbAuM4KsAN4xQv1faHdrlGK','6737c27bc14e5.jpg','[]'),(2,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$/KtOYh8sa09hz/Hob4VmZOxnp7LwZVC9FXhtZKyJCNhCpQc6MG4Hq',NULL,'[]'),(3,'Test','[]','$2y$13$RhqNj4lAtpzeLQQk/uWEL.AAjLj9inLL.fquh1e1mayAqJF5NOiGO',NULL,'[]'),(8,'Testuser','[]','$2y$13$.rW7g7N8bWijynF.Lt9Ws.WlLnaGkHN.XE4SB9R3hfZd0Ps6lQ4Dm',NULL,'[]');
+INSERT INTO `user` VALUES (9,'admin2','[\"ROLE_ADMIN\"]','$2y$13$mdMwUVI9B8CjU8hKeYHmh.dKLJGJS8GlUsZFJFbbBLVMdk6ah.3Na',NULL,'[{\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}]'),(10,'john_reader','[\"ROLE_USER\"]','$2y$13$wz.Qesa6yLIKHSuUUb5N4Ow7L6XuLiiVon2u9Wx5XZVV/a/.OB0dq',NULL,'[{\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}]'),(11,'jane_bookworm','[\"ROLE_USER\"]','$2y$13$d6Y8DLAWSOnBkjwkym/3ouzWNPPaLTAzsVVS8/aLQeW35csY6ZR0S',NULL,'[{\"isRead\": false, \"message\": \"Your book has been approved!\"}]'),(12,'Rhys','[]','$2y$13$Zju7nLuLaQWmdkYtbQyl8OAYtrqJhBQ8E3RIZShX/4IMGmshKTO12','673a0727454d4.jpg','[{\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}]'),(13,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$hf/BOsQyR8o/nopebOloJ.FqRH3IjkGtw.X6033qW9D9R468Vctwu',NULL,'[]');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vote`
+--
+
+DROP TABLE IF EXISTS `vote`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vote` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `review_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `type` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_5A1085643E2E969B` (`review_id`),
+  KEY `IDX_5A108564A76ED395` (`user_id`),
+  CONSTRAINT `vote_ibfk_1` FOREIGN KEY (`review_id`) REFERENCES `review` (`id`),
+  CONSTRAINT `vote_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `vote_chk_1` CHECK ((`type` in (_utf8mb4'upvote',_utf8mb4'downvote')))
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vote`
+--
+
+LOCK TABLES `vote` WRITE;
+/*!40000 ALTER TABLE `vote` DISABLE KEYS */;
+INSERT INTO `vote` VALUES (1,4,13,'upvote'),(2,5,13,'upvote'),(11,8,9,'downvote'),(13,5,9,'upvote'),(14,7,9,'upvote'),(25,7,13,'upvote'),(26,9,13,'upvote');
+/*!40000 ALTER TABLE `vote` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -144,4 +151,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-16 20:16:43
+-- Dump completed on 2024-11-17 18:34:14
