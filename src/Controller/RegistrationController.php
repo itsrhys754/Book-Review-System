@@ -25,13 +25,9 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Check if the privacy policy is accepted
-            if (!$form->get('accept_privacy_policy')->getData()) {
-                return $this->render('registration/register.html.twig', [
-                    'form' => $form->createView(),
-                    'error' => 'You must accept the privacy policy to register.'
-                ]);
-            }
+            $newPassword = $form->get('password')->getData();
+            $confirmNewPassword = $form->get('confirm_password')->getData();
+            
 
             try {
                 // Handle avatar upload
@@ -57,6 +53,20 @@ class RegistrationController extends AbstractController
                 
                 if ($existingUser) {
                     $this->addFlash('danger', 'This username is already taken. Please choose another one.');
+                    return $this->render('registration/register.html.twig', [
+                        'form' => $form->createView(),
+                    ]);
+                }
+
+                if (!$form->get('accept_privacy_policy')->getData()) {
+                    return $this->render('registration/register.html.twig', [
+                        'form' => $form->createView(),
+                        'error' => 'You must accept the privacy policy to register.'
+                    ]);
+                }
+
+                if ($newPassword !== $confirmNewPassword) {
+                    $this->addFlash('danger', 'Passwords do not match.');
                     return $this->render('registration/register.html.twig', [
                         'form' => $form->createView(),
                     ]);

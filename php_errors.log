@@ -66,3 +66,4 @@ Did you mean this?
 [17-Nov-2024 15:06:41 UTC] [critical] Error thrown while running command "doctrine:fixtures:load". Message: "Warning: Undefined array key "avatarFilename""
 [17-Nov-2024 17:08:14 UTC] [critical] Error thrown while running command "doctrine:migrations:diff". Message: "Class "Rhys\ReviewBundle\Entity\Vote" is not a valid entity or mapped super class."
 [17-Nov-2024 17:09:52 UTC] [critical] Error thrown while running command "doctrine:schema:update --force". Message: "Class "Rhys\ReviewBundle\Entity\Vote" is not a valid entity or mapped super class."
+[17-Nov-2024 20:07:42 UTC] [critical] Error thrown while running command "doctrine:migrations:migrate". Message: "An exception occurred while executing a query: SQLSTATE[42000]: Syntax error or access violation: 1091 Can't DROP 'notification'; check that column/key exists"

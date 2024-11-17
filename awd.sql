@@ -49,6 +49,30 @@ INSERT INTO `book` VALUES (6,9,'The Great Gatsby','F. Scott Fitzgerald',180,'A s
 UNLOCK TABLES;
 
 --
+-- Table structure for table `doctrine_migration_versions`
+--
+
+DROP TABLE IF EXISTS `doctrine_migration_versions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `doctrine_migration_versions` (
+  `version` varchar(191) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `executed_at` datetime DEFAULT NULL,
+  `execution_time` int DEFAULT NULL,
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `doctrine_migration_versions`
+--
+
+LOCK TABLES `doctrine_migration_versions` WRITE;
+/*!40000 ALTER TABLE `doctrine_migration_versions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `doctrine_migration_versions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `review`
 --
 
@@ -60,7 +84,7 @@ CREATE TABLE `review` (
   `book_id` int NOT NULL,
   `user_id` int NOT NULL,
   `content` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `rating` int NOT NULL,
+  `rating` decimal(10,1) NOT NULL,
   `created_at` datetime NOT NULL,
   `approved` tinyint(1) NOT NULL,
   `contains_spoilers` tinyint(1) NOT NULL,
@@ -69,7 +93,7 @@ CREATE TABLE `review` (
   KEY `IDX_794381C6A76ED395` (`user_id`),
   CONSTRAINT `FK_794381C616A2B381` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`),
   CONSTRAINT `FK_794381C6A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +102,7 @@ CREATE TABLE `review` (
 
 LOCK TABLES `review` WRITE;
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
-INSERT INTO `review` VALUES (4,11,12,'Great',10,'2024-11-17 15:22:06',1,0),(5,11,10,'Average',7,'2024-11-17 15:23:10',1,0),(7,11,13,'This is such a great book!',8,'2024-11-17 16:02:53',1,1),(8,6,13,'AA',8,'2024-11-17 16:03:48',1,0),(9,9,12,'aa',8,'2024-11-17 18:25:49',1,1);
+INSERT INTO `review` VALUES (4,11,12,'Great',10.0,'2024-11-17 15:22:06',1,0),(5,11,10,'Average',9.5,'2024-11-17 15:23:10',1,0),(7,11,13,'This is such a great book!',8.0,'2024-11-17 16:02:53',1,1),(8,6,13,'AA',8.0,'2024-11-17 16:03:48',1,0),(10,9,13,'aaaa',7.0,'2024-11-17 19:20:14',1,0),(12,7,12,'aaaa',9.0,'2024-11-17 19:25:13',1,0),(13,7,13,'aa',2.0,'2024-11-17 19:30:35',1,0),(15,8,12,'aasadsafas',4.5,'2024-11-17 20:12:29',1,0);
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +122,7 @@ CREATE TABLE `user` (
   `notifications` json NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_IDENTIFIER_USERNAME` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +131,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (9,'admin2','[\"ROLE_ADMIN\"]','$2y$13$mdMwUVI9B8CjU8hKeYHmh.dKLJGJS8GlUsZFJFbbBLVMdk6ah.3Na',NULL,'[{\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}]'),(10,'john_reader','[\"ROLE_USER\"]','$2y$13$wz.Qesa6yLIKHSuUUb5N4Ow7L6XuLiiVon2u9Wx5XZVV/a/.OB0dq',NULL,'[{\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}]'),(11,'jane_bookworm','[\"ROLE_USER\"]','$2y$13$d6Y8DLAWSOnBkjwkym/3ouzWNPPaLTAzsVVS8/aLQeW35csY6ZR0S',NULL,'[{\"isRead\": false, \"message\": \"Your book has been approved!\"}]'),(12,'Rhys','[]','$2y$13$Zju7nLuLaQWmdkYtbQyl8OAYtrqJhBQ8E3RIZShX/4IMGmshKTO12','673a0727454d4.jpg','[{\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}]'),(13,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$hf/BOsQyR8o/nopebOloJ.FqRH3IjkGtw.X6033qW9D9R468Vctwu',NULL,'[]');
+INSERT INTO `user` VALUES (9,'admin2','[\"ROLE_ADMIN\"]','$2y$13$mdMwUVI9B8CjU8hKeYHmh.dKLJGJS8GlUsZFJFbbBLVMdk6ah.3Na',NULL,'[{\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has not been approved.\"}]'),(10,'john_reader','[\"ROLE_USER\"]','$2y$13$wz.Qesa6yLIKHSuUUb5N4Ow7L6XuLiiVon2u9Wx5XZVV/a/.OB0dq',NULL,'[{\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your book has been approved!\"}]'),(11,'jane_bookworm','[\"ROLE_USER\"]','$2y$13$d6Y8DLAWSOnBkjwkym/3ouzWNPPaLTAzsVVS8/aLQeW35csY6ZR0S',NULL,'[{\"isRead\": false, \"message\": \"Your book has been approved!\"}]'),(12,'Rhys','[\"ROLE_USER\", \"ROLE_MODERATOR\"]','$2y$13$Zju7nLuLaQWmdkYtbQyl8OAYtrqJhBQ8E3RIZShX/4IMGmshKTO12','673a0727454d4.jpg','[{\"isRead\": false, \"message\": \"Your book has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"You have been promoted to moderator!\"}, {\"isRead\": false, \"message\": \"Your review has not been approved.\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}]'),(13,'admin','[\"ROLE_ADMIN\", \"ROLE_MODERATOR\"]','$2y$13$hf/BOsQyR8o/nopebOloJ.FqRH3IjkGtw.X6033qW9D9R468Vctwu',NULL,'[{\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}, {\"isRead\": false, \"message\": \"Your review has been approved!\"}]'),(15,'Rhysaa','[]','$2y$13$Pa/rcEWWsZvZI4FuAKZbGeEqhe3VIkoR8tb5t0BrIKs85SVoUi6yi',NULL,'[]'),(16,'Rhyssfssfsa','[]','$2y$13$7WkbS8sd037d61uVwgT.KOPE7vX9grSyOlgqGh.jc3qT6nqoGl7qm',NULL,'[]');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -130,7 +154,6 @@ CREATE TABLE `vote` (
   CONSTRAINT `vote_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `vote_chk_1` CHECK (`type` IN ('upvote', 'downvote'))
 ) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,7 +162,7 @@ CREATE TABLE `vote` (
 
 LOCK TABLES `vote` WRITE;
 /*!40000 ALTER TABLE `vote` DISABLE KEYS */;
-INSERT INTO `vote` VALUES (1,4,13,'upvote'),(2,5,13,'upvote'),(11,8,9,'downvote'),(13,5,9,'upvote'),(14,7,9,'upvote'),(25,7,13,'upvote'),(26,9,13,'upvote');
+INSERT INTO `vote` VALUES (11,8,9,'downvote'),(13,5,9,'upvote'),(14,7,9,'upvote'),(33,5,13,'upvote'),(39,4,13,'upvote'),(52,7,13,'upvote'),(62,13,12,'downvote'),(64,8,12,'upvote'),(66,15,13,'upvote');
 /*!40000 ALTER TABLE `vote` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -152,4 +175,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-17 18:34:14
+-- Dump completed on 2024-11-17 20:20:08

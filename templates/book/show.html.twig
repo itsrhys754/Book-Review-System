@@ -89,10 +89,6 @@
                                     <option value="lowest">Lowest Rated</option>
                                 </select>
                             </div>
-
-                            {% if is_granted('ROLE_USER') and not hasReviewed %}
-                                <button type="button" onclick="window.location.href='{{ path('app_review_new', { 'bookId': book.id }) }}'" class="btn btn-primary">Write a Review</button>
-                            {% endif %}
                         </div>
                     {% endif %}
                 </div>

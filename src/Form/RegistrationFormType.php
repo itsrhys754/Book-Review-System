@@ -15,6 +15,8 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class RegistrationFormType extends AbstractType
 {
@@ -43,7 +45,12 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Confirm Password',
                 'attr' => [
                     'class' => 'password-input',
-                ]
+                ],
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => 'Please confirm your password.',
+                    ]),
+                ],
             ])
             ->add('avatar', FileType::class, [
                 'mapped' => false,
@@ -75,6 +82,20 @@ class RegistrationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'validation_groups' => ['Default', 'registration'],
         ]);
+    }
+
+    public function validate($object, ExecutionContextInterface $context)
+    {
+        $form = $context->getRoot();
+        $password = $form->get('password')->getData();
+        $confirmPassword = $form->get('confirm_password')->getData();
+
+        if ($password !== $confirmPassword) {
+            $context->buildViolation('The passwords do not match. Please ensure both fields are identical.')
+                ->atPath('confirm_password')
+                ->addViolation();
+        }
     }
 }

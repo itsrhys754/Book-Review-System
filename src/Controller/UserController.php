@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Form\UserEditType;
 
-class ProfileController extends AbstractController
+class UserController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
@@ -135,21 +135,21 @@ class ProfileController extends AbstractController
             // Handle password change if requested
             if ($newPassword) {
                 if (!$currentPassword) {
-                    $this->addFlash('error', 'Current password is required to change password.');
+                    $this->addFlash('danger', 'Current password is required to change password.');
                     return $this->render('profile/edit.html.twig', [
                         'form' => $form->createView(),
                     ]);
                 }
 
                 if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
-                    $this->addFlash('error', 'Current password is incorrect.');
+                    $this->addFlash('danger', 'Current password is incorrect.');
                     return $this->render('profile/edit.html.twig', [
                         'form' => $form->createView(),
                     ]);
                 }
 
                 if ($newPassword !== $confirmNewPassword) {
-                    $this->addFlash('error', 'New passwords do not match.');
+                    $this->addFlash('danger', 'Passwords do not match.');
                     return $this->render('profile/edit.html.twig', [
                         'form' => $form->createView(),
                     ]);
