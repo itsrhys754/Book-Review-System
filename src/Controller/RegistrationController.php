@@ -11,9 +11,18 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface; 
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface; 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use App\Repository\UserRepository;
 
 class RegistrationController extends AbstractController
 {
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
+    // Route to register a new user
     #[Route('/register', name: 'app_register')]
     public function register(
         Request $request,
@@ -48,8 +57,7 @@ class RegistrationController extends AbstractController
                 }
 
                 // Check if username already exists
-                $existingUser = $entityManager->getRepository(User::class)
-                    ->findOneBy(['username' => $user->getUsername()]);
+                $existingUser = $this->userRepository->findOneBy(['username' => $user->getUsername()]);
                 
                 if ($existingUser) {
                     $this->addFlash('danger', 'This username is already taken. Please choose another one.');

@@ -41,7 +41,7 @@ class BookType extends AbstractType
             ->add('imageFilename', FileType::class, [
                 'label' => 'Book Image (JPEG, PNG)',
                 'required' => false,
-                'mapped' => false, // This field is not mapped to the entity directly
+                'mapped' => false, // This field is not mapped to the entity directly 
             ]);
     }
 

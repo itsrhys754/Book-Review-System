@@ -14,14 +14,17 @@ class SearchController extends AbstractController
         private BookRepository $bookRepository
     ) {}
 
+    // Route to search for books
     #[Route('/search', name: 'app_search', methods: ['GET'])]
     public function search(Request $request): Response
     {
+        // Get the query parameters from the request
         $query = $request->query->get('query');
         $selectedGenres = $request->query->all('genres');
         $selectedPages = $request->query->get('pages');
         $selectedRating = $request->query->get('rating');
 
+        // Search for books based on the query parameters
         $books = $this->bookRepository->searchBooks(
             $query,
             $selectedGenres,

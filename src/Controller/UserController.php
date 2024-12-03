@@ -12,14 +12,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Form\UserEditType;
+use App\Repository\UserRepository;
 
 class UserController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
+    private UserRepository $userRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository)
     {
         $this->entityManager = $entityManager;
+        $this->userRepository = $userRepository;
     }
 
     #[Route("/profile", name:"app_profile")]
@@ -41,25 +44,23 @@ class UserController extends AbstractController
         ]);
     }
 
+    // Route to view a public profile
     #[Route("/profile/{username}", name:"app_public_profile", priority: -1)]
-    public function publicProfile(
-        string $username, 
-        EntityManagerInterface $entityManager
-    ): Response {
+    public function publicProfile(string $username): Response
+    {
         // Don't process if this is the main profile route
         if ($username === 'review') {
             throw $this->createNotFoundException('Profile not found');
         }
-
-        $user = $entityManager->getRepository(User::class)
-            ->findOneBy(['username' => $username]);
+        
+        $user = $this->userRepository->findOneBy(['username' => $username]);
         
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
 
         // Get approved books and reviews
-        $books = $entityManager->getRepository(Book::class)
+        $books = $this->entityManager->getRepository(Book::class)
             ->findBy(['user' => $user, 'approved' => true]);
             
         $reviews = array_filter(
@@ -77,6 +78,7 @@ class UserController extends AbstractController
         ]);
     }
     
+    // Route to allow the user to delete their own review
     #[Route("/profile/review/delete/{id}", name:"delete_review")]
     public function deleteReview(
         Review $review, 
@@ -113,6 +115,7 @@ class UserController extends AbstractController
         return $this->redirectToRoute('app_profile');
     }
 
+    // Route to allow the user to edit their profile
     #[Route("/profile/edit", name:"app_profile_edit")]
     public function editProfile(
         Request $request,
@@ -174,6 +177,7 @@ class UserController extends AbstractController
         ]);
     }
 
+    // Route to allow the user to delete a notification
     #[Route("/profile/notification/delete/{index}", name:"delete_notification")]
     public function deleteNotification(Request $request, int $index): Response
     {
@@ -193,7 +197,7 @@ class UserController extends AbstractController
         }
 
         // Get the referer URL or fallback to app_profile
-        // This is to ensure that the user is redirected back to the correct page after deleting a notification
+        // This is to ensure that the user is stays on the same page after deleting a notification
         $returnUrl = $request->headers->get('referer', $this->generateUrl('app_profile'));
         
         return $this->redirect($returnUrl);

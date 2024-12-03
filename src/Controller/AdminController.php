@@ -29,6 +29,7 @@ class AdminController extends AbstractController
         $this->tokenStorage = $tokenStorage;
     }
 
+    // Route to manage books
     #[Route('/admin/books', name: 'admin_books')]
     public function manageBooks(): Response
     {
@@ -40,6 +41,7 @@ class AdminController extends AbstractController
         ]);
     }
 
+    // Route to manage reviews
     #[Route('/admin/reviews', name: 'admin_reviews')]
     public function manageReviews(): Response
     {
@@ -51,6 +53,7 @@ class AdminController extends AbstractController
         ]);
     }
 
+    // Route to approve a book
     #[Route('/admin/approve/book/{id}', name: 'admin_approve_book')]
     public function approveBook(Book $book): Response
     {
@@ -72,10 +75,11 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_books');
     }
 
+    // Route to approve a review
     #[Route('/admin/approve/review/{id}', name: 'admin_approve_review')]
     public function approveReview(Review $review): Response
     {
-        // Check if the current admin is the owner of the review
+        // Check if the current admin is the owner of the review (to prevent self-approval)
         if ($review->getUser() === $this->getUser()) {
             $this->addFlash('error', 'You cannot approve your own review. Another administrator must review it.');
             return $this->redirectToRoute('admin_reviews');
@@ -100,6 +104,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_reviews');
     }
 
+    // Route to delete a book
     #[Route('/admin/delete/book/{id}', name: 'admin_delete_book')]
     public function deleteBook(Book $book): Response
     {
@@ -120,6 +125,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_books');
     }
 
+    // Route to delete a review
     #[Route('/admin/delete/review/{id}', name: 'admin_delete_review')]
     public function deleteReview(Review $review): Response
     {
@@ -140,6 +146,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_reviews');
     }
 
+    // Route to manage users
     #[Route('/admin/users', name: 'admin_users')]
     public function manageUsers(Request $request): Response
     {
@@ -156,6 +163,7 @@ class AdminController extends AbstractController
         ]);
     }
 
+    // Route to delete a user
     #[Route('/admin/delete/user/{id}', name: 'admin_delete_user')]
     public function deleteUser(User $user, Request $request): Response
     {
@@ -209,6 +217,7 @@ class AdminController extends AbstractController
         }
     }
 
+    // Route to make a user a moderator
     #[Route('/admin/make-mod/{id}', name: 'admin_make_user_mod')]
     public function makeUserMod(User $user): Response
     {

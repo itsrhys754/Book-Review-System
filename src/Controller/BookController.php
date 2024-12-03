@@ -15,11 +15,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BookController extends AbstractController
 {
+    private BookRepository $bookRepository;
+
+    public function __construct(BookRepository $bookRepository)
+    {
+        $this->bookRepository = $bookRepository;
+    }
+
+    // Route to view all books
     #[Route('/books', name: 'app_books')]
-    public function index(BookRepository $bookRepository): Response
+    public function index(): Response
     {
         // Fetches all books to then be grouped by genre
-        $booksByGenre = $bookRepository->findAll(); 
+        $booksByGenre = $this->bookRepository->findAll(); 
 
         // Group books by genre
         $groupedBooks = [];
@@ -32,6 +40,7 @@ class BookController extends AbstractController
         ]);
     }
 
+    // Route to create a new book
     #[Route('/books/new', name: 'app_book_new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -87,6 +96,7 @@ class BookController extends AbstractController
         ]);
     }
 
+    // Route to view details of a single book
     #[Route('/books/{id}', name: 'app_book_show')]
     public function show(Book $book): Response
     {
@@ -95,6 +105,7 @@ class BookController extends AbstractController
         ]);
     }
 
+    // Route to edit a book
     #[Route('/books/{id}/edit', name: 'app_book_edit')]
     public function edit(
         Request $request, 
@@ -165,10 +176,11 @@ class BookController extends AbstractController
         ]);
     }
 
+    // Route to view books by genre
     #[Route('/books/genre/{genre}', name: 'app_books_by_genre')]
-    public function booksByGenre(string $genre, BookRepository $bookRepository): Response
+    public function booksByGenre(string $genre): Response
     {
-        $books = $bookRepository->findBy(['genre' => $genre, 'approved' => true]);
+        $books = $this->bookRepository->findBy(['genre' => $genre, 'approved' => true]);
 
         return $this->render('book/genre.html.twig', [
             'genre' => $genre,
