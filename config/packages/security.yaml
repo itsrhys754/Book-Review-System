@@ -37,7 +37,7 @@ security:
     access_control:
         - { path: ^/admin, roles: [ROLE_ADMIN, ROLE_MODERATOR] }
         - { path: ^/books/new, roles: [ROLE_USER] }
-        - { path: ^/reviews/new, roles: [ROLE_USER] }
+        - { path: ^/review/new, roles: [ROLE_USER] }
 
 when@test:
     security:

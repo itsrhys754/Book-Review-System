@@ -15,7 +15,7 @@ function showCustomConfirmModal(deleteUrl, message, title) {
 }
 
 // Attach event listener to the delete buttons
-document.querySelectorAll('.delete-btn').forEach(function(button) {
+document.querySelectorAll('.delete-btn, .make-moderator-btn').forEach(function(button) {
     button.addEventListener('click', function(event) {
         event.preventDefault(); // Prevent the default button behavior
         const deleteUrl = this.getAttribute('data-url'); // Get the URL from the data attribute

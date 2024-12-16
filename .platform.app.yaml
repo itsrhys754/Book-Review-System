@@ -37,6 +37,7 @@ web:
 
 mounts:
     "/var": { source: local, source_path: var }
+    "/public/uploads": { source: local, source_path: uploads }
 
 relationships:
     database: "mysql:mysql"
@@ -50,6 +51,11 @@ hooks:
     deploy: |
         set -x -e
         php bin/console doctrine:migrations:migrate --no-interaction
+        # Create upload directories if they don't exist
+        mkdir -p public/uploads/book_images
+        mkdir -p public/uploads/avatars
+        # Set proper permissions
+        chmod -R 755 public/uploads
         symfony-deploy
 
 crons:
@@ -57,5 +63,3 @@ crons:
   security-check:
     spec: '50 23 * * *'  # Run daily at 11:50 PM UTC
     cmd: if [ "$PLATFORM_ENVIRONMENT_TYPE" = "production" ]; then croncape php-security-checker; fi
-
-
