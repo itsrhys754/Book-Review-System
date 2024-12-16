@@ -187,4 +187,35 @@ class BookController extends AbstractController
             'books' => $books,
         ]);
     }
+
+    // Route to delete a book
+    #[Route('/books/{id}/delete', name: 'app_book_delete')]
+    public function delete(
+        Book $book,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Check if the current user is the owner of the book
+        if ($book->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You can only delete your own books.');
+        }
+
+        try {
+            // Delete the book's image if it exists
+            if ($book->getImageFilename()) {
+                $imagePath = $this->getParameter('book_images_directory').'/'.$book->getImageFilename();
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
+            $entityManager->remove($book);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Book was successfully deleted.');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Error deleting book: ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_books');
+    }
 }
