@@ -3,137 +3,287 @@
 {% block title %}{{ book.title }}{% endblock %}
 
 {% block body %}
-    <div class="book-detail-container" data-book-id="{{ book.id }}">
+    <div class="book-detail-container" {% if not isGoogleBook|default(false) %}data-book-id="{{ book.id }}"{% endif %}>
         <div class="book-header">
             <div class="book-image-container">
-                {% if book.imageFilename %}
-                    <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" alt="{{ book.title }}" class="book-image"/>
+                {% if isGoogleBook|default(false) %}
+                    <img src="{{ book.thumbnail }}" alt="{{ book.title }}" class="book-image"/>
                 {% else %}
-                    <img src="{{ asset('uploads/book_images/default-book-image.png') }}" alt="Default cover" class="book-image"/>
+                    {% if book.imageFilename %}
+                        <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" alt="{{ book.title }}" class="book-image"/>
+                    {% else %}
+                        <img src="{{ asset('uploads/book_images/default-book-image.png') }}" alt="Default cover" class="book-image"/>
+                    {% endif %}
                 {% endif %}
             </div>
             
             <div class="book-info">
                 <h1>{{ book.title }}</h1>
                 <div class="book-meta">
-                    <p class="author">By {{ book.author }}</p>
-                    <p class="genre">{{ book.genre }}</p>
-                    <p class="pages">{{ book.pages }} pages</p>
+                    <p class="author">By {{ isGoogleBook|default(false) ? book.authors|join(', ') : book.author }}</p>
+                    <p class="genre">{{ isGoogleBook|default(false) ? book.categories|join(', ') : book.genre }}</p>
+                    <p class="pages">{{ isGoogleBook|default(false) ? book.pageCount : book.pages }} pages</p>
+                    {% if book.publisher %}
+                        <p class="publisher">Published by {{ book.publisher }}</p>
+                    {% endif %}
+                    {% if book.publishedDate %}
+                        <p class="published-date">Published {{ book.publishedDate }}</p>
+                    {% endif %}
+                    {% if book.isbn %}
+                        <p class="isbn">ISBN: {{ book.isbn }}</p>
+                    {% endif %}
                 </div>
                 
                 <div class="book-summary">
                     <h2>Summary</h2>
-                    <p>{{ book.summary }}</p>
+                    <p>{{ isGoogleBook|default(false) ? book.description : book.summary }}</p>
                 </div>
 
-                {% if is_granted('ROLE_USER') %}
-                    {% set userReview = null %}
-                    {% for review in book.reviews %}
-                        {% if review.user == app.user %}
-                            {% set userReview = review %}
-                        {% endif %}
-                    {% endfor %}
+                <div class="nytimes-reviews-section mt-4 p-4 bg-light rounded shadow-sm">
+                    <div class="d-flex align-items-center mb-4">
+                        <h2 class="mb-0">
+                            <i class="fas fa-newspaper text-muted me-2"></i>
+                            New York Times Reviews
+                        </h2>
+                    </div>
+                    {% if nytReviews is empty %}
+                        <div class="no-nytimes-reviews text-center py-4">
+                            <i class="fas fa-search text-muted mb-3" style="font-size: 2rem;"></i>
+                            <p class="lead mb-2">No New York Times reviews are available for this book.</p>
+                            {% if book.isbn %}
+                                <p class="text-muted small">ISBN: {{ book.isbn }}</p>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="nytimes-reviews">
+                            {% for review in nytReviews %}
+                                <div class="nytimes-review mb-4 p-3 bg-white rounded">
+                                    <div class="review-meta d-flex justify-content-between align-items-center mb-3">
+                                        <span class="review-byline fw-bold">{{ review.byline }}</span>
+                                        <span class="review-date text-muted small">
+                                            {{ review.publication_date|date('F j, Y') }}
+                                        </span>
+                                    </div>
+                                    <p class="review-summary mb-3">{{ review.summary }}</p>
+                                    <div class="text-end">
+                                        <a href="{{ review.url }}" target="_blank" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-external-link-alt me-1"></i>
+                                            Read Full Review
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if isGoogleBook|default(false) %}
+                    {% if book.averageRating %}
+                        <div class="google-books-rating">
+                            <p>Google Books Rating: {{ book.averageRating }}/5 ({{ book.ratingsCount }} ratings)</p>
+                        </div>
+                    {% endif %}
                     
-                    <div class="action-buttons">
-                        {% if book.user == app.user %}
-                            <button onclick="window.location.href='{{ path('app_book_edit', {id: book.id}) }}'" 
-                                    class="btn btn-primary me-2">
-                                <i class="fas fa-edit me-1"></i> Edit Book
-                            </button>
-                            <button class="btn btn-danger delete-btn"
-                                    data-url="{{ path('app_book_delete', {id: book.id}) }}"
-                                    data-message="Are you sure you want to delete this book? This action cannot be undone."
-                                    data-title="Delete Book">
-                                <i class="fas fa-trash me-1"></i> Delete Book
-                            </button>
-                        {% endif %}
-                        
-                        {% if userReview %}
-                            <div class="review-actions mt-3">
-                                <button onclick="window.location.href='{{ path('app_review_edit', {id: userReview.id}) }}'" 
-                                        class="btn btn-primary">
-                                    <i class="fas fa-edit me-1"></i> Edit Review
-                                </button>
+                    {% if is_granted('ROLE_USER') %}
+                        {% if existingBook %}
+                            <div class="alert alert-info mt-3">
+                                <p>This book is already in our library!</p>
+                                <a href="{{ path('app_book_show', { id: existingBook.id }) }}" class="btn btn-primary">
+                                    View in Library
+                                </a>
                             </div>
                         {% else %}
-                            <button type="button" onclick="window.location.href='{{ path('app_review_new', { 'bookId': book.id }) }}'" class="btn btn-primary">Write a Review</button>
+                            <div class="mt-3">
+                                <a href="{{ path('app_book_new', { book_id: book.googleBooksId }) }}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i> Add to Library to enable reviews!
+                                </a>
+                            </div>
                         {% endif %}
-                    </div>
+                    {% else %}
+                        <div class="mt-3">
+                            <a href="{{ path('app_login') }}" class="btn btn-secondary">
+                                Login to Add to Library
+                            </a>
+                        </div>
+                    {% endif %}
                 {% else %}
-                    <button type="button" onclick="window.location.href='{{ path('app_login') }}'" class="btn btn-secondary">Login to Review</button>
+                    {% if is_granted('ROLE_USER') %}
+                        {% set userReview = null %}
+                        {% for review in book.reviews %}
+                            {% if review.user == app.user %}
+                                {% set userReview = review %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <div class="action-buttons">
+                            {% if book.user == app.user %}
+                                <button onclick="window.location.href='{{ path('app_book_edit', {id: book.id}) }}'" 
+                                        class="btn btn-primary me-2">
+                                    <i class="fas fa-edit me-1"></i> Edit Book
+                                </button>
+                                <button class="btn btn-danger delete-btn"
+                                        data-url="{{ path('app_book_delete', {id: book.id}) }}"
+                                        data-message="Are you sure you want to delete this book? This action cannot be undone."
+                                        data-title="Delete Book">
+                                    <i class="fas fa-trash me-1"></i> Delete Book
+                                </button>
+                            {% endif %}
+                            
+                            {% if userReview %}
+                                <div class="review-actions mt-3">
+                                    <button onclick="window.location.href='{{ path('app_review_edit', {id: userReview.id}) }}'" 
+                                            class="btn btn-primary">
+                                        <i class="fas fa-edit me-1"></i> Edit Review
+                                    </button>
+                                </div>
+                            {% else %}
+                                <button type="button" onclick="window.location.href='{{ path('app_review_new', { 'bookId': book.id }) }}'" class="btn btn-primary">Write a Review</button>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <button type="button" onclick="window.location.href='{{ path('app_login') }}'" class="btn btn-secondary">Login to Review</button>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
 
-        <div class="reviews-section">
-            <div class="reviews-header">
-                <div class="reviews-title-section">
-                    <h2>Reader Reviews</h2>
-                    
-                    {# Calculate review statistics #}
-                    {% set totalRating = 0 %}
-                    {% set reviewCount = 0 %}
-                    {% set hasReviewed = false %}
-                    
-                    {% for review in book.reviews %}
-                        {% if review.approved %}
-                            {% set totalRating = totalRating + review.rating %}
-                            {% set reviewCount = reviewCount + 1 %}
-                        {% endif %}
-                        {% if is_granted('ROLE_USER') and review.user == app.user %}
-                            {% set hasReviewed = true %}
-                        {% endif %}
-                    {% endfor %}
+        {% if not isGoogleBook|default(false) %}
+            <div class="reviews-section">
+                <div class="reviews-header">
+                    <div class="reviews-title-section">
+                        <h2>Reader Reviews</h2>
+                        
+                        {# Calculate review statistics #}
+                        {% set totalRating = 0 %}
+                        {% set reviewCount = 0 %}
+                        {% set hasReviewed = false %}
+                        
+                        {% for review in book.reviews %}
+                            {% if review.approved %}
+                                {% set totalRating = totalRating + review.rating %}
+                                {% set reviewCount = reviewCount + 1 %}
+                            {% endif %}
+                            {% if is_granted('ROLE_USER') and review.user == app.user %}
+                                {% set hasReviewed = true %}
+                            {% endif %}
+                        {% endfor %}
 
-                    {% if reviewCount > 0 %}
-                        <div class="rating-summary">
-                            <div class="rating-stats">
-                                <div class="average-rating">
-                                    <span class="rating-number">{{ (totalRating / reviewCount)|number_format(1) }}</span>
-                                    <div class="rating-details">
-                                        <span class="rating-max">/10</span>
-                                        <span class="rating-count">{{ reviewCount }} review{% if reviewCount != 1 %}s{% endif %}</span>
+                        {% if reviewCount > 0 %}
+                            <div class="rating-summary">
+                                <div class="rating-stats">
+                                    <div class="average-rating">
+                                        <span class="rating-number">{{ (totalRating / reviewCount)|number_format(1) }}</span>
+                                        <div class="rating-details">
+                                            <span class="rating-max">/10</span>
+                                            <span class="rating-count">{{ reviewCount }} review{% if reviewCount != 1 %}s{% endif %}</span>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <div class="review-filters">
+                                    <select id="review-sort" class="form-select">
+                                        <option value="recent">Most Recent</option>
+                                        <option value="highest">Highest Rated</option>
+                                        <option value="lowest">Lowest Rated</option>
+                                    </select>
+                                </div>
                             </div>
-
-                            <div class="review-filters">
-                                <select id="review-sort" class="form-select">
-                                    <option value="recent">Most Recent</option>
-                                    <option value="highest">Highest Rated</option>
-                                    <option value="lowest">Lowest Rated</option>
-                                </select>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div id="reviews-container" class="reviews-container">
-                {# Reviews will be loaded dynamically via JavaScript #}
-            </div>
-
-            {% if reviewCount == 0 %}
-                <div class="no-reviews">
-                    <div class="no-reviews-content">
-                        <i class="fas fa-book-open"></i>
-                        <h3>No Reviews Yet</h3>
-                        <p>{% if is_granted('ROLE_USER') %}Be the first to share your thoughts on this book!{% else %}Login to be the first to review this book!{% endif %}</p>
-                        {% if is_granted('ROLE_USER') and not hasReviewed %}
-                            <button type="button" onclick="window.location.href='{{ path('app_review_new', { 'bookId': book.id }) }}'" class="btn btn-primary">Write a Review</button>
-                        {% elseif not is_granted('ROLE_USER') %}
-                            <button type="button" onclick="window.location.href='{{ path('app_login') }}'" class="btn btn-secondary">Login to Review</button>
                         {% endif %}
                     </div>
                 </div>
-            {% endif %}
-        </div>
 
-        {% if book.user == app.user %}
-            {# Removed the edit book button as it is now included in the action-buttons div #}
+                <div id="reviews-container" class="reviews-container">
+                    {# Reviews will be loaded dynamically via JavaScript #}
+                </div>
+
+            </div>
+
+            {% if nytReviews is defined and nytReviews is not null %}
+                {# Removed duplicate NYTimes reviews section #}
+            {% endif %}
+
+            {% if recommendations is defined and recommendations is not empty %}
+                <div class="recommendations-section mt-5">
+                    <h2>You Might Also Like</h2>
+                    <div class="book-recommendations">
+                        {% for rec in recommendations %}
+                            <div class="recommendation-card" onclick="window.location.href='{{ path('app_book_show', {'id': rec.id}) }}'">
+                                <div class="recommendation-image">
+                                    {% if rec.thumbnail %}
+                                        <img src="{{ rec.thumbnail }}" alt="{{ rec.title }}" class="book-thumbnail"/>
+                                    {% else %}
+                                        <img src="{{ asset('uploads/book_images/default-book-image.png') }}" alt="Default cover" class="book-thumbnail"/>
+                                    {% endif %}
+                                </div>
+                                <div class="recommendation-info">
+                                    <h3>{{ rec.title }}</h3>
+                                    {% if rec.author %}
+                                        <p class="author">By {{ rec.author }}</p>
+                                    {% endif %}
+                                    {% if rec.genre %}
+                                        <p class="genre">{{ rec.genre }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 
-    {# Link the external JavaScript file #}
-    <script src="{{ asset('js/book-reviews.js') }}"></script>
+    {% if not isGoogleBook|default(false) %}
+        <script src="{{ asset('js/book-reviews.js') }}"></script>
+    {% endif %}
+
+    <style>
+        .book-recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .recommendation-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .recommendation-image {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .recommendation-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .recommendation-info {
+            padding: 1rem;
+        }
+
+        .recommendation-info h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .recommendation-info p {
+            margin: 0.5rem 0 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
 {% endblock %}

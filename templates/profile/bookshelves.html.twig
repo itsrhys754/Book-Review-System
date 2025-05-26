@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Bookshelves{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>My Google Books Bookshelves</h1>
+            {% if not isConnected %}
+                <a href="{{ path('connect_google') }}" class="btn btn-primary">
+                    <i class="fas fa-plug"></i> Connect Google Books
+                </a>
+            {% else %}
+                <a href="{{ path('disconnect_google') }}" class="btn btn-outline-danger">
+                    <i class="fas fa-unlink"></i> Disconnect Google Books
+                </a>
+            {% endif %}
+        </div>
+
+        {% if error %}
+            <div class="alert alert-warning">
+                {{ error }}
+            </div>
+        {% elseif isConnected %}
+            <div class="row">
+                {# Bookshelves sidebar #}
+                <div class="col-md-3">
+                    <div class="list-group">
+                        {% for shelf in bookshelves %}
+                            <a href="{{ path('app_user_bookshelves', {
+                                'shelf': shelf.id
+                            }) }}"
+                               class="list-group-item list-group-item-action {% if selectedShelf == shelf.id %}active{% endif %}">
+                                {{ shelf.title }}
+                                <span class="badge bg-secondary float-end">{{ shelf.volumeCount }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# Books grid #}
+                <div class="col-md-9">
+                    {% if selectedShelf %}
+                        <div class="row row-cols-1 row-cols-md-3 g-4">
+                            {% for book in shelfBooks %}
+                                <div class="col">
+                                    <div class="card h-100">
+                                        {% if book.imageLinks.thumbnail is defined %}
+                                            <img src="{{ book.imageLinks.thumbnail|replace({'http:': 'https:'}) }}" 
+                                                 class="card-img-top" 
+                                                 alt="{{ book.title|default('Unknown Title') }}"
+                                                 style="height: 200px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="fas fa-book fa-3x text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ book.title|default('Unknown Title') }}</h5>
+                                            {% if book.authors is defined and book.authors is not empty %}
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        {{ book.authors|join(', ') }}
+                                                    </small>
+                                                </p>
+                                            {% endif %}
+                                            {% if book.publishedDate is defined %}
+                                                <p class="card-text">
+                                                    <small class="text-muted">
+                                                        Published: {{ book.publishedDate }}
+                                                    </small>
+                                                </p>
+                                            {% endif %}
+                                            <a href="{{ path('app_book_show', {'id': book.id}) }}" 
+                                               class="btn btn-primary btn-sm">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        No books found in this shelf.
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            Select a bookshelf to view its books
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,27 +1,29 @@
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: username
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        # API Firewall for JWT authentication
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
+
+
+        # Main Firewall for web authentication
         main:
             lazy: true
             provider: app_user_provider
-
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
 
             form_login:
                 login_path: app_login
@@ -31,13 +33,24 @@ security:
             logout:
                 path: app_logout
                 invalidate_session: true
-                target: app_books  # Redirect to books page after logout
+                target: app_books
 
-    # Easy way to control access for large sections of your site
+            # Specify the entry point for the form_login
+            entry_point: form_login
+
     access_control:
         - { path: ^/admin, roles: [ROLE_ADMIN, ROLE_MODERATOR] }
         - { path: ^/books/new, roles: [ROLE_USER] }
         - { path: ^/review/new, roles: [ROLE_USER] }
+        - { path: ^/api/doc, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/reviews, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/books, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/users, roles: PUBLIC_ACCESS }
+        - { path: ^/api/v1/login, roles: [] }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY}
+
+
+
 
 when@test:
     security:

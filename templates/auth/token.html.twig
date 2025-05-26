@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Get API Token{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-center">Get API Token</h2>
+                    </div>
+                    <div class="card-body">
+                        {% if auto_token is defined %}
+                            <div class="alert alert-success">
+                                <h5>Your API Token:</h5>
+                                <div class="border p-2 bg-light">
+                                    <code id="tokenDisplay" style="word-break: break-all;">{{ auto_token }}</code>
+                                </div>
+                                <button class="btn btn-sm btn-secondary mt-2" onclick="copyToken()">Copy Token</button>
+                            </div>
+                        {% elseif login_prompt is defined %}
+                            <div class="alert alert-info">
+                                <p>{{ login_prompt }}</p>
+                            </div>
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Log In</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block javascripts %}
+        <script>
+            // Handle copying token to clipboard
+            function copyToken() {
+                const tokenText = document.getElementById('tokenDisplay').textContent;
+                navigator.clipboard.writeText(tokenText);
+                alert('Token copied to clipboard!');
+            }
+
+            // Handle login form submission via AJAX for stateless authentication
+            document.getElementById('loginForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                fetch('{{ path('api_login') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username: username, password: password })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.token) {
+                            // Store token in localStorage or use it as needed
+                            localStorage.setItem('jwt_token', data.token);
+                            // Optionally, redirect or show token immediately
+                            document.getElementById('tokenDisplay').textContent = data.token;
+                            alert('You are logged in and the token has been displayed!');
+                        } else {
+                            alert('Invalid credentials!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred during login!');
+                    });
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

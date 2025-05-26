@@ -2,6 +2,52 @@
 
 {% block title %}Manage Books{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .book-card {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+            background-color: white;
+        }
+        .book-image {
+            width: 80px;
+            min-width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .book-details {
+            flex-grow: 1;
+            padding: 1rem;
+        }
+        .book-meta {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        .google-books-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1;
+            color: #fff;
+            background-color: #4285f4;
+            border-radius: 0.25rem;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="profile-wrapper">
         <div class="card shadow-sm">
@@ -10,38 +56,60 @@
                 <span class="badge bg-light text-primary">{{ pendingBooks|length }} Pending</span>
             </div>
             
-            <div class="card-body p-0">
+            <div class="card-body">
                 {% if pendingBooks is empty %}
-                    <div class="no-results m-4">
-                        <i class="fas fa-info-circle"></i>
+                    <div class="no-results m-4 text-center">
+                        <i class="fas fa-info-circle fa-2x mb-3"></i>
                         <h2>No Pending Books</h2>
                         <p>There are no books waiting for approval at this time.</p>
                     </div>
                 {% else %}
                     <div class="manage-grid">
                         {% for book in pendingBooks %}
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="book-image me-3">
-                                            {% if book.imageFilename %}
-                                                <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" 
-                                                     alt="{{ book.title }}"
-                                                     style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
-                                            {% else %}
-                                                <img src="{{ asset('uploads/book_images/default-book-image.png') }}" 
-                                                     alt="Default cover"
-                                                     style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
+                            <div class="book-card">
+                                <div class="d-flex p-3">
+                                    <div class="book-image-container">
+                                        {% if book.imageFilename %}
+                                            <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" 
+                                                 alt="{{ book.title }}"
+                                                 class="book-image">
+                                        {% else %}
+                                            <img src="{{ asset('uploads/book_images/default-book-image.png') }}" 
+                                                 alt="Default cover"
+                                                 class="book-image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="book-details">
+                                        <h3 class="h5 mb-2">
+                                            {{ book.title }}
+                                            {% if book.googleBooksId %}
+                                                <span class="google-books-badge">
+                                                    <i class="fas fa-book me-1"></i> Google Books
+                                                </span>
+                                            {% endif %}
+                                        </h3>
+                                        <div class="book-meta">
+                                            <p><strong>Author:</strong> {{ book.author }}</p>
+                                            <p><strong>Genre:</strong> {{ book.genre }}</p>
+                                            <p><strong>Pages:</strong> {{ book.pages }}</p>
+                                            {% if book.summary %}
+                                                <p><strong>Summary:</strong> {{ book.summary|slice(0, 150) }}{% if book.summary|length > 150 %}...{% endif %}</p>
+                                            {% endif %}
+                                            {% if book.googleBooksId %}
+                                                <p><strong>Source:</strong> 
+                                                    <a href="https://books.google.com/books?id={{ book.googleBooksId }}" 
+                                                       target="_blank" rel="noopener noreferrer">
+                                                        View on Google Books
+                                                    </a>
+                                                </p>
                                             {% endif %}
                                         </div>
-                                        <span class="fw-medium">{{ book.title }}</span>
-                                    </div>
-                                    
-                                    <p>{{ book.summary|slice(0, 100) }}{% if book.summary|length > 100 %}...{% endif %}</p>
-                                    <p class="submitted-by">
-                                        Submitted by: <a href="{{ path('app_public_profile', { username: book.user.username }) }}">{{ book.user.username }}</a>
-                                    </p>
-                                    <div class="text-end">
+                                        <p class="submitted-by mb-2">
+                                            <i class="fas fa-user me-1"></i> Submitted by: 
+                                            <a href="{{ path('app_public_profile', { username: book.user.username }) }}">
+                                                {{ book.user.username }}
+                                            </a>
+                                        </p>
                                         <div class="action-buttons">
                                             <button class="btn btn-primary" 
                                                     onclick="window.location.href='{{ path('admin_approve_book', { id: book.id }) }}'">

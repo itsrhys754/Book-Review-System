@@ -22,15 +22,6 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
-            ReviewBundle:
-                type: attribute
-                is_bundle: false
-                dir: 'vendor/rhysawd/review-bundle/src/Entity'  
-                prefix: 'Rhys\ReviewBundle\Entity'
-                alias: RhysReviewBundle
-        controller_resolver:
-            auto_mapping: false
-
 
 when@test:
     doctrine:

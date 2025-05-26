@@ -33,10 +33,13 @@
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     {% for genre in get_genres() %}
                                         {% if genre is not empty %}
-                                            <a class="dropdown-item" href="{{ path('app_books_by_genre', { genre: genre }) }}">{{ genre }}</a>
+                                            <a class="dropdown-item" href="{{ path('app_books_by_genre', { genre: genre|url_encode }) }}">{{ genre }}</a>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_token') }}">Get API Token</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav ml-auto">

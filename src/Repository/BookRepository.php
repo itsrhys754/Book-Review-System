@@ -116,4 +116,106 @@ class BookRepository extends ServiceEntityRepository
     
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * Search for books based on various criteria.
+     * This method allows searching by title, author, or summary,
+     * filtering by genres, page count, and rating.
+     * It returns an array of books that match the search criteria.
+     */
+    public function search(?string $query, array $selectedGenres = [], ?string $selectedPages = null, ?string $selectedRating = null): array
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->where('b.approved = true');
+
+        // Apply search query if provided
+        if ($query) {
+            $qb->andWhere('b.title LIKE :query OR b.author LIKE :query OR b.summary LIKE :query')
+               ->setParameter('query', '%' . $query . '%');
+        }
+
+        // Filter by selected genres
+        if (!empty($selectedGenres)) {
+            $qb->andWhere('b.genre IN (:genres)')
+               ->setParameter('genres', $selectedGenres);
+        }
+
+        // Filter by page range
+        if ($selectedPages) {
+            switch ($selectedPages) {
+                case '0-200':
+                    $qb->andWhere('b.pages <= 200');
+                    break;
+                case '200-400':
+                    $qb->andWhere('b.pages > 200 AND b.pages <= 400');
+                    break;
+                case '400+':
+                    $qb->andWhere('b.pages > 400');
+                    break;
+            }
+        }
+
+        // Filter by rating
+        if ($selectedRating) {
+            if ($selectedRating === '10') {
+                $qb->andWhere('b.rating = 10');
+            } else {
+                $rating = str_replace('+', '', $selectedRating);
+                $qb->andWhere('b.rating >= :rating')
+                   ->setParameter('rating', $rating);
+            }
+        }
+
+        return $qb->orderBy('b.title', 'ASC')
+                 ->getQuery()
+                 ->getResult();
+    }
+
+    /**
+     * Get all Google Books IDs from the database
+     * This method returns an array of Google Books IDs that are already in our database
+     */
+    public function findGoogleBooksIds(): array
+    {
+        $result = $this->createQueryBuilder('b')
+            ->select('b.googleBooksId')
+            ->where('b.googleBooksId IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+            
+        // Convert from array of arrays to flat array of IDs
+        return array_map(function($item) {
+            return $item['googleBooksId'];
+        }, $result);
+    }
+
+    /**
+     * Get all existing book identifiers (Google Books IDs and ISBNs) from the database
+     * This method returns an array containing two arrays: googleBooksIds and isbns
+     */
+    public function findExistingBooksIdentifiers(): array
+    {
+        $result = $this->createQueryBuilder('b')
+            ->select('b.googleBooksId, b.isbn')
+            ->where('b.googleBooksId IS NOT NULL OR b.isbn IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+            
+        $googleBooksIds = [];
+        $isbns = [];
+        
+        foreach ($result as $item) {
+            if ($item['googleBooksId']) {
+                $googleBooksIds[] = $item['googleBooksId'];
+            }
+            if ($item['isbn']) {
+                $isbns[] = $item['isbn'];
+            }
+        }
+        
+        return [
+            'googleBooksIds' => array_filter(array_unique($googleBooksIds)),
+            'isbns' => array_filter(array_unique($isbns))
+        ];
+    }
 }

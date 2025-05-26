@@ -1,20 +1,21 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
+# config/services.yaml
 
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     book_images_directory: '%kernel.project_dir%/public/uploads/book_images'
     avatars_directory: '%kernel.project_dir%/public/uploads/avatars'
+    google_books_api_key: '%env(GOOGLE_BOOKS_API_KEY)%'  # Correct reference
+    google_client_id: '%env(GOOGLE_CLIENT_ID)%'
+    google_client_secret: '%env(GOOGLE_CLIENT_SECRET)%'
+    google_oauth_redirect_uri: '%env(GOOGLE_OAUTH_REDIRECT_URI)%'
 
 services:
-    # default configuration for services in *this* file
+    # Default configuration for services in this file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+    # Makes classes in src/ available to be used as services
+    # This creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
         exclude:
@@ -22,11 +23,52 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # Add more service definitions when explicit configuration is needed
+    # Please note that last definitions always replace previous ones
+
+    App\Serializer\CircularReferenceHandler:
+        tags:
+            - { name: 'jms_serializer.handler', type: 'object', format: 'json' }
 
     App\Command\CreateAdminCommand:
         arguments:
             $entityManager: '@doctrine.orm.entity_manager'
             $passwordEncoder: '@security.password_hasher'
         tags: ['console.command']
+
+    App\Service\GoogleOAuthService:
+        arguments:
+            $clientId: '%google_client_id%'
+            $clientSecret: '%google_client_secret%'
+            $redirectUri: '%google_oauth_redirect_uri%'
+
+    App\Service\GoogleBooksApiService:
+        arguments:
+            $client: '@guzzle.client.google_books'
+            $logger: '@logger'
+            $apiKey: '%env(GOOGLE_BOOKS_API_KEY)%'
+            $googleOAuthService: '@App\Service\GoogleOAuthService'
+
+    guzzle.client.google_books:
+        class: GuzzleHttp\Client
+        public: true
+        arguments:
+            -
+                base_uri: 'https://www.googleapis.com/books/v1/'
+                timeout: 5.0
+
+    App\Service\NYTimesApiService:
+        arguments:
+            $nytApiKey: '%env(NYTIMES_API_KEY)%'
+            $client: '@guzzle.client.nytimes'
+
+    guzzle.client.nytimes:
+        class: GuzzleHttp\Client
+        public: true
+        arguments:
+            -
+                base_uri: 'https://api.nytimes.com/svc/books/v3/'
+                timeout: 10.0
+                connect_timeout: 5.0
+                verify: true
+

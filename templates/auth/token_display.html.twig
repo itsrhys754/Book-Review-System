@@ -1,0 +1,38 @@
+{# templates/auth/token_display.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Your API Token{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-center">Your API Token</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-success">
+                            <h5>Your API Token:</h5>
+                            <div class="border p-2 bg-light">
+                                <code id="tokenDisplay" style="word-break: break-all;">{{ token }}</code>
+                            </div>
+                            <button class="btn btn-sm btn-secondary mt-2" onclick="copyToken()">Copy Token</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block javascripts %}
+        <script>
+            function copyToken() {
+                const tokenText = document.getElementById('tokenDisplay').textContent;
+                navigator.clipboard.writeText(tokenText);
+                alert('Token copied to clipboard!');
+            }
+        </script>
+    {% endblock %}
+{% endblock %}

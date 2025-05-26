@@ -1,0 +1,22 @@
+nelmio_api_doc:
+    documentation:
+        servers:
+            - url: http://127.0.0.1:8000
+        info:
+            title: BookBuddy API Documentation
+            description: Interactive documentation for BookBuddy's API!
+            version: 1.0.0
+
+        components:
+
+            securitySchemes:
+                BearerAuth:
+                    type: apiKey
+                    in: header
+                    name: Authorization
+        security:
+            - BearerAuth: []
+
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

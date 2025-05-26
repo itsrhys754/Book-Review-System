@@ -2,52 +2,178 @@
 
 {% block title %}{{ editing ? 'Edit Book' : 'Add New Book' }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .search-results {
+            margin-bottom: 20px;
+        }
+        .search-result {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .search-result:hover {
+            background-color: #e9ecef;
+        }
+        .book-search-container {
+            margin-bottom: 20px;
+        }
+        .form-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="form-wrapper">
-    {% block flashes %}
-            {{ parent() }}
-        {% endblock %}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
         <h1>{{ editing ? 'Edit Book' : 'Add New Book' }}</h1>
-        {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data', 'class': 'registration-form' } }) }}
+
+        {% if not editing %}
+            <div class="book-search-container">
+                <form method="get" action="{{ path('app_book_new') }}" class="mb-4">
+                    <div class="form-group">
+                        <label for="q">Search for a Book</label>
+                        <div class="input-group mb-3">
+                            <input type="text" id="q" name="q" class="form-control" 
+                                   value="{{ app.request.query.get('q') }}"
+                                   placeholder="Enter title, author, or ISBN...">
+                            <select name="type" class="form-select">
+                                <option value="">All</option>
+                                <option value="title" {% if app.request.query.get('type') == 'title' %}selected{% endif %}>Title</option>
+                                <option value="author" {% if app.request.query.get('type') == 'author' %}selected{% endif %}>Author</option>
+                                <option value="isbn" {% if app.request.query.get('type') == 'isbn' %}selected{% endif %}>ISBN</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                        <small class="form-text text-muted">Search Google Books to auto-fill book details</small>
+                    </div>
+                </form>
+
+                {% if searchResults is defined and searchResults|length > 0 %}
+                    <div class="search-results">
+                        <h3>Search Results</h3>
+                        {% for book in searchResults.items %}
+                            <div class="search-result">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        {% if book.volumeInfo.imageLinks is defined %}
+                                            <img src="{{ book.volumeInfo.imageLinks.thumbnail }}" alt="{{ book.volumeInfo.title }}" class="img-fluid">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-10">
+                                        <h4>{{ book.volumeInfo.title }}</h4>
+                                        <p>by {{ book.volumeInfo.authors[0] ?? 'Unknown Author' }}</p>
+                                        {% if book.volumeInfo.industryIdentifiers is defined %}
+                                            {% for identifier in book.volumeInfo.industryIdentifiers %}
+                                                {% if identifier.type == 'ISBN_13' %}
+                                                    <p>ISBN: {{ identifier.identifier }}</p>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                        <a href="{{ path('app_book_new', {
+                                            'book_id': book.id,
+                                            'q': app.request.query.get('q'),
+                                            'type': app.request.query.get('type')
+                                        }) }}" 
+                                           class="btn btn-sm btn-primary">Use This Book</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% elseif app.request.method == 'GET' and app.request.query.get('q') %}
+                    {% if app.request.query.get('book_id') %}
+                        <div class="alert alert-success">
+                            Book details added to form. You can now review and save the book.
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            No books found matching your search.
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {{ form_start(form, { 
+            'attr': { 
+                'enctype': 'multipart/form-data', 
+                'class': 'registration-form'
+            }
+        }) }}
+            {% if form_errors(form) %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form) }}
+                </div>
+            {% endif %}
+
             <div class="form-group">
-                {{ form_label(form.title) }}
-                {{ form_widget(form.title, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.title) }}
+                {{ form_row(form.isbn) }}
             </div>
 
             <div class="form-group">
-                {{ form_label(form.author) }}
-                {{ form_widget(form.author, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.author) }}
+                {{ form_row(form.title) }}
             </div>
 
             <div class="form-group">
-                {{ form_label(form.pages) }}
-                {{ form_widget(form.pages, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.pages) }}
+                {{ form_row(form.author) }}
             </div>
 
             <div class="form-group">
-                {{ form_label(form.summary) }}
-                {{ form_widget(form.summary, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.summary) }}
+                {{ form_row(form.publisher) }}
             </div>
 
             <div class="form-group">
-                {{ form_label(form.genre) }}
-                {{ form_widget(form.genre, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.genre) }}
+                {{ form_row(form.publishedDate) }}
             </div>
 
             <div class="form-group">
-                {{ form_label(form.imageFilename) }}
-                {{ form_widget(form.imageFilename, { 'attr': { 'class': 'form-control' } }) }}
-                {{ form_errors(form.imageFilename) }}
+                {{ form_row(form.pages) }}
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Save Book</button>
+                {{ form_row(form.summary) }}
             </div>
+
+            <div class="form-group">
+                {{ form_row(form.genre) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.imageFilename) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">{{ editing ? 'Update' : 'Create' }}</button>
+            <a href="{{ path('app_books') }}" class="btn btn-secondary">Cancel</a>
         {{ form_end(form) }}
     </div>
 {% endblock %}

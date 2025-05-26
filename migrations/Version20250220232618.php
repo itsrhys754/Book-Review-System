@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241117200740 extends AbstractMigration
+final class Version20250220232618 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20241117200740 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE review CHANGE rating rating NUMERIC(3, 1) NOT NULL');
+        $this->addSql('ALTER TABLE google_book_review ADD approved TINYINT(1) NOT NULL, CHANGE content content LONGTEXT NOT NULL, CHANGE google_book_id google_books_id VARCHAR(255) NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE review CHANGE rating rating NUMERIC(10, 0) NOT NULL');
+        $this->addSql('ALTER TABLE google_book_review DROP approved, CHANGE content content VARCHAR(1000) NOT NULL, CHANGE google_books_id google_book_id VARCHAR(255) NOT NULL');
     }
 }

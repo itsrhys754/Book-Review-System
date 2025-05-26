@@ -4,7 +4,6 @@
 
 {% block body %}
     <div class="example-wrapper">
-       
         <h1><a href="{{ path('app_books_by_genre', { genre: genre }) }}" class="genre-link">{{ genre | capitalize }} Books</a> <a href="{{ path('app_books') }}" class="btn btn-primary">Back to All Books</a></h1>
         <div class="book-container">
             {% for book in books %}
@@ -20,9 +19,23 @@
                     </div>
                 {% endif %}
             {% endfor %}
+
+            {% for book in googleBooks %}
+                <div class="book-item">
+                    {% if book.thumbnail %}
+                        <img src="{{ book.thumbnail }}" alt="{{ book.title }}" class="book-image" />
+                    {% else %}
+                        <img src="{{ asset('uploads/book_images/default-book-image.png') }}" alt="Default image" class="book-image" />
+                    {% endif %}
+                    <a href="{{ path('app_book_show', { id: book.id }) }}" class="book-title">{{ book.title }}</a>
+                    <p class="book-author">{{ book.authors|join(', ') }}</p>
+                </div>
+            {% endfor %}
         </div>
-        {% if books|length == 0 %}
-            <p>No approved books found in this genre.</p>
+        {% if books|length == 0 and googleBooks|length == 0 %}
+            <p>No books found in this genre.</p>
         {% endif %}
     </div>
+
+
 {% endblock %}

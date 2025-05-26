@@ -405,14 +405,18 @@ input:focus-visible {
 }
 
 .book-meta {
-    display: flex;
-    gap: 2rem;
-    color: #666;
-    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
 }
 
 .book-meta p {
-    margin: 0;
+    margin-bottom: 0.5rem;
+    color: var(--text-gray);
+}
+
+.book-meta .publisher,
+.book-meta .published-date {
+    font-style: italic;
+    font-size: 0.9rem;
 }
 
 .book-summary {
@@ -1180,3 +1184,107 @@ input:focus-visible {
         font-size: 0.8rem; 
     }
 
+/* NY Times Reviews */
+.nyt-reviews {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.nyt-reviews h4 {
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.nyt-review {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-left: 3px solid #e31c3d;
+    background-color: white;
+}
+
+.nyt-review:last-child {
+    margin-bottom: 0;
+}
+
+.nyt-review .review-summary {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+}
+
+.nyt-review .review-byline {
+    font-style: italic;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.nyt-review .review-date {
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.nyt-review .btn-link {
+    padding: 0;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: #e31c3d;
+}
+
+.nyt-review .btn-link:hover {
+    text-decoration: underline;
+    color: #b31a31;
+}
+
+.nytimes-reviews-section {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.nytimes-review {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.nytimes-review:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.review-summary {
+    line-height: 1.6;
+    color: #444;
+}
+
+.review-meta {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 0.75rem;
+}
+
+.review-byline {
+    color: #2c3e50;
+}
+
+.no-nytimes-reviews i {
+    opacity: 0.5;
+}
+
+.nytimes-review .btn-primary {
+    background-color: #1a73e8;
+    border-color: #1a73e8;
+    color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.nytimes-review .btn-primary:hover,
+.nytimes-review .btn-primary:focus {
+    background-color: #1557b0;
+    border-color: #1557b0;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

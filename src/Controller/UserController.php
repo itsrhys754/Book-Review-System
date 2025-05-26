@@ -13,16 +13,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Form\UserEditType;
 use App\Repository\UserRepository;
+use App\Service\GoogleBooksApiService;
 
 class UserController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private UserRepository $userRepository;
+    private GoogleBooksApiService $googleBooksApi;
 
-    public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager, 
+        UserRepository $userRepository,
+        GoogleBooksApiService $googleBooksApi
+    ) {
         $this->entityManager = $entityManager;
         $this->userRepository = $userRepository;
+        $this->googleBooksApi = $googleBooksApi;
     }
 
     #[Route("/profile", name:"app_profile")]
@@ -79,7 +85,7 @@ class UserController extends AbstractController
     }
     
     // Route to allow the user to delete their own review
-    #[Route("/profile/review/delete/{id}", name:"delete_review")]
+    #[Route("/profile/review/delete/{id}", name:"app_review_delete")]
     public function deleteReview(
         Review $review, 
         EntityManagerInterface $entityManager
@@ -201,5 +207,44 @@ class UserController extends AbstractController
         $returnUrl = $request->headers->get('referer', $this->generateUrl('app_profile'));
         
         return $this->redirect($returnUrl);
+    }
+
+    #[Route("/profile/bookshelves", name:"app_user_bookshelves")]
+    public function bookshelves(Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw new \LogicException('User not found or not authenticated.');
+        }
+
+        if (!$user->isGoogleConnected()) {
+            return $this->render('profile/bookshelves.html.twig', [
+                'error' => 'Please connect your Google Books account to view bookshelves',
+                'bookshelves' => [],
+                'selectedShelf' => null,
+                'shelfBooks' => [],
+                'isConnected' => false
+            ]);
+        }
+
+        // Get selected shelf ID from request
+        $selectedShelfId = $request->query->get('shelf');
+        
+        // Fetch bookshelves
+        $bookshelves = $this->googleBooksApi->getBookshelves($user);
+        
+        // Fetch books for selected shelf
+        $shelfBooks = [];
+        if ($selectedShelfId && !isset($bookshelves['error'])) {
+            $shelfBooks = $this->googleBooksApi->getBookshelfBooks($user, $selectedShelfId);
+        }
+
+        return $this->render('profile/bookshelves.html.twig', [
+            'bookshelves' => $bookshelves['items'] ?? [],
+            'selectedShelf' => $selectedShelfId,
+            'shelfBooks' => $shelfBooks['items'] ?? [],
+            'error' => $bookshelves['error'] ?? null,
+            'isConnected' => true
+        ]);
     }
 }

@@ -11,6 +11,30 @@
                     <input type="hidden" name="query" value="{{ query }}">
                     
                     <div class="filter-group">
+                        <h4>Search Type</h4>
+                        <label class="filter-option">
+                            <input type="radio" name="searchType" value=""
+                                {% if searchType == '' %}checked{% endif %}>
+                            All
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="searchType" value="title"
+                                {% if searchType == 'title' %}checked{% endif %}>
+                            Title
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="searchType" value="author"
+                                {% if searchType == 'author' %}checked{% endif %}>
+                            Author
+                        </label>
+                        <label class="filter-option">
+                            <input type="radio" name="searchType" value="isbn"
+                                {% if searchType == 'isbn' %}checked{% endif %}>
+                            ISBN
+                        </label>
+                    </div>
+
+                    <div class="filter-group">
                         <h4>Genre</h4>
                         {% for genre in genres %}
                             <label class="filter-option">
@@ -80,38 +104,124 @@
         <div class="search-content">
             <div class="search-header">
                 <h1>Search Results for "{{ query }}"</h1>
-                <span class="result-count">{{ books|length }} results found</span>
             </div>
 
-            {% if books|length > 0 %}
-                <div class="search-results">
-                    {% for book in books %}
-                        {% if book.approved %}
-                            <div class="search-result-card">
+            {% if localBooks|length > 0 %}
+                <div class="search-section">
+                    <h2>Library Results ({{ localBooks|length }})</h2>
+                    <div class="search-results">
+                        {% for book in localBooks %}
+                            {% if book.approved %}
+                                {% set avgRating = 0 %}
+                                {% set reviewCount = book.reviews|length %}
+                                {% if reviewCount > 0 %}
+                                    {% set totalRating = 0 %}
+                                    {% for review in book.reviews %}
+                                        {% set totalRating = totalRating + review.rating %}
+                                    {% endfor %}
+                                    {% set avgRating = (totalRating / reviewCount)|round(1) %}
+                                {% endif %}
+                                
+                                <div class="search-result-card local-book">
+                                    <div class="book-image">
+                                        {% if book.imageFilename %}
+                                            <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" alt="{{ book.title }}" />
+                                        {% else %}
+                                            <img src="{{ asset('uploads/book_images/default-book-image.png') }}" alt="Default cover" />
+                                        {% endif %}
+                                    </div>
+                                    <div class="book-details">
+                                        <h3><a href="{{ path('app_book_show', {'id': book.id}) }}">{{ book.title }}</a></h3>
+                                        {% if book.author %}
+                                            <p class="author">by {{ book.author }}</p>
+                                        {% endif %}
+                                        {% if book.genre %}
+                                            <p class="genre">{{ book.genre }}</p>
+                                        {% endif %}
+                                        {% if book.pages %}
+                                            <p class="pages">{{ book.pages }} pages</p>
+                                        {% endif %}
+                                        {% if book.isbn %}
+                                            <p class="isbn">ISBN: {{ book.isbn }}</p>
+                                        {% endif %}
+                                        {% if book.summary %}
+                                            <p class="summary">{{ book.summary|slice(0, 200) }}...</p>
+                                        {% endif %}
+                                        {% if book.publisher %}
+                                            <p class="publisher">Published by {{ book.publisher }}
+                                            {% if book.publishedDate %}
+                                                ({{ book.publishedDate }})
+                                            {% endif %}
+                                            </p>
+                                        {% endif %}
+                                        {% if reviewCount > 0 %}
+                                            <p class="rating">Rating: {{ avgRating }}/10 ({{ reviewCount }} reviews)</p>
+                                        {% else %}
+                                            <p class="rating">No ratings yet</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if googleBooks|length > 0 %}
+                <div class="search-section">
+                    <h2>Google Books Results ({{ googleBooks|length }})</h2>
+                    <div class="search-results">
+                        {% for book in googleBooks %}
+                            <div class="search-result-card google-book">
                                 <div class="book-image">
-                                    {% if book.imageFilename %}
-                                        <img src="{{ asset('uploads/book_images/' ~ book.imageFilename) }}" alt="{{ book.title }}" />
+                                    {% if book.thumbnail %}
+                                        <img src="{{ book.thumbnail }}" alt="{{ book.title }}" />
                                     {% else %}
                                         <img src="{{ asset('uploads/book_images/default-book-image.png') }}" alt="Default cover" />
                                     {% endif %}
                                 </div>
                                 <div class="book-details">
-                                    <h2><a href="{{ path('app_book_show', { id: book.id }) }}">{{ book.title }}</a></h2>
-                                    <p class="book-author">by {{ book.author }}</p>
-                                    <p class="book-genre">{{ book.genre }}</p>
-                                    {% if book.summary %}
-                                        <p class="book-summary">{{ book.summary|length > 200 ? book.summary|slice(0, 200) ~ '...' : book.summary }}</p>
+                                    <h3><a href="{{ path('app_book_show', {'id': book.id}) }}">{{ book.title }}</a></h3>
+                                    {% if book.author %}
+                                        <p class="author">by {{ book.author }}</p>
                                     {% endif %}
+                                    {% if book.genre %}
+                                        <p class="genre">{{ book.genre }}</p>
+                                    {% endif %}
+                                    {% if book.pages %}
+                                        <p class="pages">{{ book.pages }} pages</p>
+                                    {% endif %}
+                                    {% if book.isbn %}
+                                        <p class="isbn">ISBN: {{ book.isbn }}</p>
+                                    {% endif %}
+                                    {% if book.summary %}
+                                        <p class="book-description">{{ book.summary|length > 200 ? book.summary|slice(0, 200) ~ '...' : book.summary }}</p>
+                                    {% endif %}
+                                    {% if book.isbn %}
+                                        <p class="book-isbn">ISBN: {{ book.isbn }}</p>
+                                    {% endif %}
+                                    {% if book.publisher %}
+                                        <p class="book-publisher">Published by {{ book.publisher }}</p>
+                                    {% endif %}
+                                    {% if book.publishedDate %}
+                                        <p class="book-published-date">Published {{ book.publishedDate }}</p>
+                                    {% endif %}
+                                    <div class="book-actions">
+                                        <a href="{{ path('app_book_show', {'id': book.googleId}) }}" class="btn btn-primary">View Details</a>
+                                        {% if book.previewLink %}
+                                            <a href="{{ book.previewLink }}" target="_blank" class="btn btn-outline-primary">Preview on Google Books</a>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                        {% endif %}
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            {% else %}
+            {% endif %}
+
+            {% if localBooks|length == 0 and googleBooks|length == 0 %}
                 <div class="no-results">
-                    <i class="fas fa-search"></i>
-                    <h2>No results found</h2>
-                    <p>Try adjusting your search terms or filters</p>
+                    <p>No books found matching your search criteria.</p>
                 </div>
             {% endif %}
         </div>

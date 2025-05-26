@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use JMS\Serializer\Annotation as Serializer;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
@@ -20,18 +21,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Serializer\Groups(['review:list', 'review:item'])]
     private ?string $username = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column(type: "json")]
+    #[Serializer\Exclude]
+    
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Serializer\Exclude]
     private ?string $password = null;
 
     /**
@@ -50,7 +55,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $avatarFilename = null;
 
     #[ORM\Column(type: "json")]
+    #[Serializer\Exclude]
     private array $notifications = [];
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $googleId = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $googleAccessToken = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $googleRefreshToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $googleTokenExpires = null;
 
     public function __construct()
     {
@@ -123,6 +141,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
     }
 
     /**
@@ -223,5 +246,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->notifications = $notifications;
         return $this;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): self
+    {
+        $this->googleId = $googleId;
+        return $this;
+    }
+
+    public function getGoogleAccessToken(): ?string
+    {
+        return $this->googleAccessToken;
+    }
+
+    public function setGoogleAccessToken(?string $googleAccessToken): self
+    {
+        $this->googleAccessToken = $googleAccessToken;
+        return $this;
+    }
+
+    public function getGoogleRefreshToken(): ?string
+    {
+        return $this->googleRefreshToken;
+    }
+
+    public function setGoogleRefreshToken(?string $googleRefreshToken): self
+    {
+        $this->googleRefreshToken = $googleRefreshToken;
+        return $this;
+    }
+
+    public function getGoogleTokenExpires(): ?\DateTimeInterface
+    {
+        return $this->googleTokenExpires;
+    }
+
+    public function setGoogleTokenExpires(?\DateTimeInterface $googleTokenExpires): self
+    {
+        $this->googleTokenExpires = $googleTokenExpires;
+        return $this;
+    }
+
+    public function isGoogleConnected(): bool
+    {
+        return $this->googleId !== null;
     }
 }
